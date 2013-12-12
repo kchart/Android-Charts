@@ -32,15 +32,6 @@ import cn.limc.androidcharts.view.MACandleStickChart;
  */
 
 /**
- * <p>
- * en
- * </p>
- * <p>
- * jp
- * </p>
- * <p>
- * cn
- * </p>
  * 
  * @author retryu
  * @version v1.0 2013-12-9 上午10:43:17
