@@ -9,6 +9,7 @@ import android.os.Bundle;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
 import cn.limc.androidcharts.view.MACandleStickChart;
+
 /*
  * CharTestActivity.java
  * Android-Charts
@@ -41,16 +42,13 @@ import cn.limc.androidcharts.view.MACandleStickChart;
  * cn
  * </p>
  * 
- * @author limc
+ * @author retryu
  * @version v1.0 2013-12-9 上午10:43:17
  * 
  */
 public class CharTestActivity extends Activity {
 
-
-
-//aa
-	/*
+	 /*
 	 * (non-Javadoc)
 	 * 
 	 * @param savedInstanceState
@@ -240,7 +238,7 @@ public class CharTestActivity extends Activity {
 		ohlc.add(new OHLCEntity(265, 268, 265, 267, 20110506));
 		ohlc.add(new OHLCEntity(271, 271, 266, 266, 20110505));
 		ohlc.add(new OHLCEntity(250, 260, 250, 260, 20110504));
-		ohlc.add(new OHLCEntity(230, 240, 230, 240, 20110503));  
+		ohlc.add(new OHLCEntity(230, 240, 230, 240, 20110503));
 		// ohlc.add(new OHLCEntity(268, 271, 267, 271, 20110503));
 		// ohlc.add(new OHLCEntity(273 ,275 ,268 ,268 ,20110429));
 		// ohlc.add(new OHLCEntity(274 ,276 ,270 ,272 ,20110428));
