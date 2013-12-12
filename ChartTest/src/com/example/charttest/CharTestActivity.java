@@ -107,8 +107,8 @@ public class CharTestActivity extends Activity {
 		macandlestickchart.setDisplayAxisYTitle(true);
 		macandlestickchart.setDisplayLatitude(true);
 		macandlestickchart.setDisplayLongitude(true);
-		macandlestickchart.setLatitudeFontSize(20);
-		macandlestickchart.setBackgroundColor(Color.BLACK);
+		macandlestickchart.setLatitudeFontSize(15);
+		macandlestickchart.setBackgroundColor(Color.BLACK); 
 
 		// 为chart2增加均线
 		macandlestickchart.setLineData(lines);
