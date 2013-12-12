@@ -1365,11 +1365,23 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 						- axisMarginTop;
 				for (int i = 0; i <= counts; i++) {
 					// draw line
+
+					float x1 = axisMarginLeft;
+					// float y1 = (1-i*postOffset/60)*(320-16);
+					// float y1 = offset - i * postOffset+axisMarginTop;
+					float totalHeight = super.getHeight()
+							- getAxisMarginBottom();
+					float scale = ((float) (counts - i)) / (float) counts;
+					float y1 = scale * totalHeight - getAxisMarginTop();
+					float x2 = length + axisMarginLeft;
+
+					float y2 = y1;
 					if (displayLatitude) {
-						canvas.drawLine(axisMarginLeft,
-								offset - i * postOffset, axisMarginLeft
-										+ length, offset - i * postOffset,
-								mPaintLine);
+						// canvas.drawLine(axisMarginLeft,
+						// offset - i * postOffset, axisMarginLeft
+						// + length, offset - i * postOffset,
+						// mPaintLine);
+						canvas.drawLine(x1, y1, x2, y2, mPaintLine);
 					}
 					// draw title
 					if (displayAxisYTitle) {
@@ -1975,7 +1987,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	}
 
 	/**
-	 * @param backgroundColor the backgroundColor to set
+	 * @param backgroundColor
+	 *            the backgroundColor to set
 	 */
 	public void setBackgroundColor(int backgroundColor) {
 		this.backgroundColor = backgroundColor;
