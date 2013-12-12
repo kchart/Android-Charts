@@ -419,7 +419,9 @@ public class CandleStickChart extends GridChart {
 		List<String> TitleY = new ArrayList<String>();
 		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 10 * 10;
 		// calculate degrees on Y axis
-		for (int i = 0; i < this.getLatitudeNum(); i++) {
+		float current =minValue;
+		for (int i = 0; i < this.getLatitudeNum() || current < maxValue; i++) {
+			current += average;
 			String value = String.valueOf((int) Math.floor(minValue + i
 					* average));
 			if (value.length() < super.getAxisYMaxTitleLength()) {
@@ -429,15 +431,17 @@ public class CandleStickChart extends GridChart {
 			}
 			TitleY.add(value);
 		}
+		// TitleY.add("270");
+		// TitleY.add("280");
 		// calculate last degrees by use max value
-		String value = String.valueOf((int) Math
-				.floor(((int) maxValue) / 10 * 10));
-		if (value.length() < super.getAxisYMaxTitleLength()) {
-			while (value.length() < super.getAxisYMaxTitleLength()) {
-				value = new String(" ") + value;
-			}
-		}
-		TitleY.add(value);
+		// String value = String.valueOf((int) Math
+		// .floor(((int) maxValue) / 10 * 10));
+		// if (value.length() < super.getAxisYMaxTitleLength()) {
+		// while (value.length() < super.getAxisYMaxTitleLength()) {
+		// value = new String(" ") + value;
+		// }
+		// }
+		// TitleY.add(value);
 
 		super.setAxisYTitles(TitleY);
 	}

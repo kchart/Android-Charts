@@ -161,7 +161,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 默认轴线上边距
 	 * </p>
 	 */
-	public static final float DEFAULT_AXIS_MARGIN_TOP = 5f;
+	public static final float DEFAULT_AXIS_MARGIN_TOP = -0f;
 
 	/**
 	 * <p>
@@ -1367,8 +1367,6 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 					// draw line
 
 					float x1 = axisMarginLeft;
-					// float y1 = (1-i*postOffset/60)*(320-16);
-					// float y1 = offset - i * postOffset+axisMarginTop;
 					float totalHeight = super.getHeight()
 							- getAxisMarginBottom();
 					float scale = ((float) (counts - i)) / (float) counts;
@@ -1386,8 +1384,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 					// draw title
 					if (displayAxisYTitle) {
 						if (i < counts && i > 0) {
-							canvas.drawText(axisYTitles.get(i), 0f, offset - i
-									* postOffset + latitudeFontSize / 2f,
+							canvas.drawText(axisYTitles.get(i), 0f, y1 + latitudeFontSize / 2f,
 									mPaintFont);
 						} else if (0 == i) {
 							canvas.drawText(axisYTitles.get(i), 0f,
