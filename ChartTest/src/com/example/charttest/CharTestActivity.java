@@ -47,6 +47,9 @@ import cn.limc.androidcharts.view.MACandleStickChart;
  */
 public class CharTestActivity extends Activity {
 
+
+
+//aa
 	/*
 	 * (non-Javadoc)
 	 * 
