@@ -42,7 +42,7 @@ import cn.limc.androidcharts.view.MACandleStickChart;
  * </p>
  * 
  * @author limc
- * @version v1.0 2013-12-9 上午10:43:17
+ * @version v1.0 2013-12-9 10:43:17
  * 
  */
 public class CharTestActivity extends Activity {
@@ -71,21 +71,18 @@ public class CharTestActivity extends Activity {
 		this.macandlestickchart = (MACandleStickChart) findViewById(R.id.macandlestickchart);
 		List<LineEntity> lines = new ArrayList<LineEntity>();
 
-		// 计算5日均线
 		LineEntity MA5 = new LineEntity();
 		MA5.setTitle("MA5");
 		MA5.setLineColor(Color.WHITE);
 		MA5.setLineData(initMA(5));
 		lines.add(MA5);
 
-		// 计算10日均线
 		LineEntity MA10 = new LineEntity();
 		MA10.setTitle("MA10");
 		MA10.setLineColor(Color.RED);
 		MA10.setLineData(initMA(10));
 		lines.add(MA10);
 
-		// 计算25日均线
 		LineEntity MA25 = new LineEntity();
 		MA25.setTitle("MA25");
 		MA25.setLineColor(Color.GREEN);
@@ -101,15 +98,15 @@ public class CharTestActivity extends Activity {
 		macandlestickchart.setLatitudeFontColor(Color.WHITE);
 		macandlestickchart.setAxisMarginRight(1);
 
-		// 最大显示足数
+		// 鏈�ぇ鏄剧ず瓒虫暟
 		macandlestickchart.setMaxSticksNum(52);
-		// 最大纬线数
+		// 鏈�ぇ绾嚎鏁�
 		macandlestickchart.setLatitudeNum(5);
-		// 最大经线数
+		// 鏈�ぇ缁忕嚎鏁�
 		macandlestickchart.setLongitudeNum(3);
-		// 最大价格
+		// 鏈�ぇ浠锋牸
 		macandlestickchart.setMaxValue(1000);
-		// 最小价格
+		// 鏈�皬浠锋牸
 		macandlestickchart.setMinValue(0);
 
 		macandlestickchart.setDisplayAxisXTitle(true);
@@ -119,10 +116,10 @@ public class CharTestActivity extends Activity {
 		macandlestickchart.setLatitudeFontSize(20);
 		macandlestickchart.setBackgroundColor(Color.BLACK);
 
-		// 为chart2增加均线
+		// 涓篶hart2澧炲姞鍧囩嚎
 		macandlestickchart.setLineData(lines);
 
-		// 为chart2增加均线
+		// 涓篶hart2澧炲姞鍧囩嚎
 		macandlestickchart.setOHLCData(ohlc);
 
 	}
