@@ -676,7 +676,7 @@ public class AndroidChartsActivity extends Activity {
         ohlc.add(new OHLCEntity(265 ,268 ,265 ,267 ,20110506));
         ohlc.add(new OHLCEntity(271 ,271 ,266 ,266 ,20110505));
         ohlc.add(new OHLCEntity(271 ,273 ,269 ,273 ,20110504));
-        ohlc.add(new OHLCEntity(268 ,271 ,267 ,271 ,20110503));
+        ohlc.add(new OHLCEntity(240 ,271 ,267 ,271 ,20110503));
 //        ohlc.add(new OHLCEntity(273 ,275 ,268 ,268 ,20110429));
 //        ohlc.add(new OHLCEntity(274 ,276 ,270 ,272 ,20110428));
 //        ohlc.add(new OHLCEntity(275 ,277 ,273 ,273 ,20110427));
