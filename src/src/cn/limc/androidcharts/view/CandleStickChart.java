@@ -21,18 +21,20 @@
 
 package cn.limc.androidcharts.view;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.limc.androidcharts.entity.OHLCEntity;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.FloatMath;
+import android.util.Log;
 import android.view.MotionEvent;
+import cn.limc.androidcharts.entity.OHLCEntity;
 
 /**
  * 
@@ -56,6 +58,8 @@ import android.view.MotionEvent;
  * 
  */
 public class CandleStickChart extends GridChart {
+
+	float stickWidth;
 	/**
 	 * <p>
 	 * Default price up stick's border color
@@ -297,6 +301,79 @@ public class CandleStickChart extends GridChart {
 		super.onDraw(canvas);
 
 		drawCandleSticks(canvas);
+
+		setDisplayCrossXOnTouch(false);
+		setDisplayCrossYOnTouch(false);
+		// if (displayCrossXOnTouch || displayCrossYOnTouch) {
+		drawWithFingerClick(canvas);
+		// }
+	}
+
+	protected void drawWithFingerClick(Canvas canvas) {
+		Paint mPaint = new Paint();
+		mPaint.setColor(Color.CYAN);
+
+		float lineHLength = getWidth() - 2f;
+		float lineVLength = getHeight() - 2f;
+
+		// draw text
+		if (isDisplayAxisXTitle()) {
+			lineVLength = lineVLength - getAxisMarginBottom();
+
+			if (getClickPostX() > 0 && getClickPostY() > 0) {
+				// TODO calculate points to draw
+				PointF BoxVS = new PointF(getClickPostX()
+						- getLatitudeFontSize() * 5f / 2f, lineVLength + 2f);
+				PointF BoxVE = new PointF(getClickPostX()
+						+ getLatitudeFontSize() * 5f / 2f, lineVLength
+						+ getAxisMarginBottom() - 1f);
+
+				// draw text
+				drawAlphaTextBox(BoxVS, BoxVE,
+						getAxisXGraduate(getClickPostX()),
+						getLatitudeFontSize(), canvas);
+			}
+		}
+
+		if (isDisplayAxisYTitle()) {
+			lineHLength = lineHLength - getAxisMarginLeft();
+
+			if (getClickPostX() > 0 && getClickPostY() > 0) {
+				// TODO calculate points to draw
+				PointF BoxHS = new PointF(1f, getClickPostY()
+						- getLatitudeFontSize() / 2f);
+				PointF BoxHE = new PointF(getAxisMarginLeft(), getClickPostY()
+						+ getLatitudeFontSize() / 2f);
+
+				// draw text
+				drawAlphaTextBox(BoxHS, BoxHE,
+						getAxisYGraduate(getClickPostY()),
+						getLatitudeFontSize(), canvas);
+			}
+		}
+
+		// draw line
+		if (getClickPostX() > 0 && getClickPostY() > 0) {
+			int count = (int) ((getClickPostX() - getAxisMarginLeft()) / stickWidth);
+			int diff = (int) ((getClickPostX() - getAxisMarginLeft() - count) / stickWidth);
+			float posX = getClickPostX() - getAxisMarginLeft();
+			diff = diff;
+			float mid = (1 + stickWidth) * (diff) + (1 + stickWidth)
+					+ getAxisMarginLeft();
+			Log.e("debug", "diff:" + diff + "   click: " + mid + "   "
+					+ (getClickPostX() - getAxisMarginLeft()) + " "
+					+ stickWidth);
+			posX = mid - stickWidth / 2;
+
+			canvas.drawLine(posX, 1f, posX, lineVLength, mPaint);
+
+			// canvas.drawLine(getClickPostX(), 1f, getClickPostX(),
+			// lineVLength,
+			// mPaint);
+
+			canvas.drawLine(getAxisMarginLeft(), getClickPostY(),
+					getAxisMarginLeft() + lineHLength, getClickPostY(), mPaint);
+		}
 	}
 
 	/*
@@ -369,8 +446,9 @@ public class CandleStickChart extends GridChart {
 	@Override
 	public String getAxisYGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisYGraduate(value));
-		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
-				+ minValue));
+		float val = graduate * (maxValue - minValue) + minValue;
+		String valStr = new DecimalFormat("###,###,###.##").format(val);
+		return valStr;
 	}
 
 	/**
@@ -419,8 +497,8 @@ public class CandleStickChart extends GridChart {
 		List<String> TitleY = new ArrayList<String>();
 		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 10 * 10;
 		// calculate degrees on Y axis
-		float current =minValue;
-		for (int i = 0; i < this.getLatitudeNum() || current < maxValue; i++) {
+		float current = minValue;
+		for (int i = 0; i < this.getLatitudeNum() || current <= maxValue; i++) {
 			current += average;
 			String value = String.valueOf((int) Math.floor(minValue + i
 					* average));
@@ -460,7 +538,7 @@ public class CandleStickChart extends GridChart {
 	 * @param canvas
 	 */
 	protected void drawCandleSticks(Canvas canvas) {
-		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
+		stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
 				.getAxisMarginRight()) / maxSticksNum) - 1;
 		float stickX = super.getAxisMarginLeft() + 1;
 
@@ -469,7 +547,6 @@ public class CandleStickChart extends GridChart {
 
 		Paint mPaintNegative = new Paint();
 		mPaintNegative.setColor(negativeStickFillColor);
-
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
 
@@ -521,6 +598,7 @@ public class CandleStickChart extends GridChart {
 
 				// next x
 				stickX = stickX + 1 + stickWidth;
+				// Log.e("debug", "x:" + stickX);
 			}
 		}
 	}
@@ -642,6 +720,7 @@ public class CandleStickChart extends GridChart {
 			}
 			break;
 		case MotionEvent.ACTION_MOVE:
+			Log.e("debug", "move");
 			if (TOUCH_MODE == ZOOM) {
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_LENGTH
@@ -657,6 +736,14 @@ public class CandleStickChart extends GridChart {
 					super.postInvalidate();
 					super.notifyEventAll(this);
 				}
+			} else {
+				Log.e("debug", "click  move");
+				float clickPostX = event.getX();
+				float clickPostY = event.getY();
+				setClickPostX(clickPostX);
+				setClickPostY(clickPostY);
+				super.postInvalidate();
+				return false;
 			}
 			break;
 		}

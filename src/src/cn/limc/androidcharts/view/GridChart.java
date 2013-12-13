@@ -36,6 +36,7 @@ import android.graphics.PathEffect;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 /**
@@ -736,6 +737,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	private List<String> axisXTitles;
 
+	private float postOffset;
+
 	/**
 	 * <p>
 	 * Titles for display of Y axis
@@ -1012,7 +1015,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @param canvas
 	 */
-	private void drawAlphaTextBox(PointF ptStart, PointF ptEnd, String content,
+	public void drawAlphaTextBox(PointF ptStart, PointF ptEnd, String content,
 			int fontSize, Canvas canvas) {
 
 		Paint mPaintBox = new Paint();
@@ -1299,7 +1302,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			mPaintFont.setTextSize(longitudeFontSize);
 			mPaintFont.setAntiAlias(true);
 			if (counts > 1) {
-				float postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight)
+				postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight)
 						/ (counts - 1);
 				float offset = axisMarginLeft + axisMarginRight;
 				for (int i = 0; i <= counts; i++) {
@@ -1344,7 +1347,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	protected void drawAxisGridY(Canvas canvas) {
 		if (null != axisYTitles) {
-			int counts = axisYTitles.size();
+			int counts = axisYTitles.size() - 1;
 			float length = super.getWidth() - axisMarginLeft;
 
 			Paint mPaintLine = new Paint();
@@ -1384,12 +1387,16 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 					// draw title
 					if (displayAxisYTitle) {
 						if (i < counts && i > 0) {
-							canvas.drawText(axisYTitles.get(i), 0f, y1 + latitudeFontSize / 2f,
-									mPaintFont);
+							Log.e("debug", "i:" + i);
+							canvas.drawText(axisYTitles.get(i), 0f, y1
+									+ latitudeFontSize / 2f, mPaintFont);
 						} else if (0 == i) {
 							canvas.drawText(axisYTitles.get(i), 0f,
 									super.getHeight() - this.axisMarginBottom
 											- 2f, mPaintFont);
+						} else if (counts == i) {
+							canvas.drawText(axisYTitles.get(i), 0f,
+									latitudeFontSize - 2f, mPaintFont);
 						}
 					}
 				}
@@ -1990,5 +1997,16 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	public void setBackgroundColor(int backgroundColor) {
 		this.backgroundColor = backgroundColor;
 	}
+
+	public float getPostOffset() {
+		return postOffset;
+	}
+
+	public void setPostOffset(float postOffset) {
+		this.postOffset = postOffset;
+	}
+	
+	
+	
 
 }
