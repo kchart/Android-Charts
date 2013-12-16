@@ -420,11 +420,11 @@ public class StickChart extends GridChart {
 					canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
 							mPaintStick);
 				} else {
-					canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
+					canvas.drawLine(stickX, highY,stickX, lowY, mPaintStick);
 				}
 
 				// next x
-				stickX = stickX + 1 + stickWidth;
+				stickX = xAxisOffset+stickX + 1 + stickWidth;
 			}
 		}
 	}

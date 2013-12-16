@@ -48,15 +48,14 @@ public class CharTestActivity extends Activity {
 
 	MACandleStickChart macandlestickchart;
 	List<OHLCEntity> ohlc;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_main);
 		initOHLC();
-		initMACandleStickChart();
-	}
+		initMACandleStickChart(); 
+	} 
 
 	private void initMACandleStickChart() {
 		this.macandlestickchart = (MACandleStickChart) findViewById(R.id.macandlestickchart);
@@ -67,8 +66,8 @@ public class CharTestActivity extends Activity {
 		MA5.setTitle("MA5");
 		MA5.setLineColor(Color.WHITE);
 		MA5.setLineData(initMA(5));
-		lines.add(MA5);
-
+		lines.add(MA5); 
+ 
 		// 计算10日均线
 		LineEntity MA10 = new LineEntity();
 		MA10.setTitle("MA10");
@@ -147,6 +146,12 @@ public class CharTestActivity extends Activity {
 		List<OHLCEntity> ohlc = new ArrayList<OHLCEntity>();
 
 		this.ohlc = new ArrayList<OHLCEntity>();
+
+		
+		ohlc.add(new OHLCEntity(265, 268, 265, 267, 20110829));
+		ohlc.add(new OHLCEntity(271, 271, 266, 266, 20110828));
+		ohlc.add(new OHLCEntity(250, 260, 250, 260, 20110827));
+		ohlc.add(new OHLCEntity(220, 240, 220, 240, 20110826));
 		ohlc.add(new OHLCEntity(246, 248, 235, 235, 20110825));
 		ohlc.add(new OHLCEntity(240, 242, 236, 242, 20110824));
 		ohlc.add(new OHLCEntity(236, 240, 235, 240, 20110823));
@@ -210,25 +215,35 @@ public class CharTestActivity extends Activity {
 		ohlc.add(new OHLCEntity(250, 254, 250, 254, 20110601));
 		ohlc.add(new OHLCEntity(250, 252, 248, 250, 20110531));
 		ohlc.add(new OHLCEntity(253, 254, 250, 251, 20110530));
+		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110529));
+		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110528));
 		ohlc.add(new OHLCEntity(255, 256, 253, 253, 20110527));
 		ohlc.add(new OHLCEntity(256, 257, 253, 254, 20110526));
 		ohlc.add(new OHLCEntity(256, 257, 254, 256, 20110525));
 		ohlc.add(new OHLCEntity(265, 265, 257, 257, 20110524));
 		ohlc.add(new OHLCEntity(265, 266, 265, 265, 20110523));
+		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110522));
+		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110521));
 		ohlc.add(new OHLCEntity(267, 268, 265, 266, 20110520));
 		ohlc.add(new OHLCEntity(264, 267, 264, 267, 20110519));
 		ohlc.add(new OHLCEntity(264, 266, 262, 265, 20110518));
 		ohlc.add(new OHLCEntity(266, 267, 264, 264, 20110517));
 		ohlc.add(new OHLCEntity(264, 267, 263, 267, 20110516));
+		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110515));
+		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110514));
+		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110513));
 		ohlc.add(new OHLCEntity(266, 267, 264, 264, 20110513));
+		
 		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110512));
 		ohlc.add(new OHLCEntity(267, 269, 266, 269, 20110511));
 		ohlc.add(new OHLCEntity(266, 268, 266, 267, 20110510));
 		ohlc.add(new OHLCEntity(264, 268, 263, 266, 20110509));
+		ohlc.add(new OHLCEntity(265, 268, 265, 267, 20110508));
+		ohlc.add(new OHLCEntity(265, 268, 265, 267, 20110507));
 		ohlc.add(new OHLCEntity(265, 268, 265, 267, 20110506));
 		ohlc.add(new OHLCEntity(271, 271, 266, 266, 20110505));
 		ohlc.add(new OHLCEntity(250, 260, 250, 260, 20110504));
-		ohlc.add(new OHLCEntity(230, 240, 230, 240, 20110503));
+		ohlc.add(new OHLCEntity(220, 240, 220, 240, 20110503));
 		// ohlc.add(new OHLCEntity(268, 271, 267, 271, 20110503));
 		// ohlc.add(new OHLCEntity(273 ,275 ,268 ,268 ,20110429));
 		// ohlc.add(new OHLCEntity(274 ,276 ,270 ,272 ,20110428));
@@ -237,9 +252,9 @@ public class CharTestActivity extends Activity {
 		// ohlc.add(new OHLCEntity(282 ,283 ,280 ,281 ,20110425));
 		// ohlc.add(new OHLCEntity(282 ,283 ,281 ,282 ,20110422));
 		// ohlc.add(new OHLCEntity(280 ,281 ,279 ,280 ,20110421));
-		// ohlc.add(new OHLCEntity(283 ,283 ,279 ,279 ,20110420));
+	 	// ohlc.add(new OHLCEntity(283 ,283 ,279 ,279 ,20110420));
 		// ohlc.add(new OHLCEntity(284 ,286 ,283 ,285 ,20110419));
-		// ohlc.add(new OHLCEntity(283 ,286 ,282 ,285 ,20110418));
+	 	// ohlc.add(new OHLCEntity(283 ,286 ,282 ,285 ,20110418));
 		// ohlc.add(new OHLCEntity(285 ,285 ,283 ,284 ,20110415));
 		// ohlc.add(new OHLCEntity(280 ,285 ,279 ,285 ,20110414));
 		// ohlc.add(new OHLCEntity(281 ,283 ,280 ,282 ,20110413));
@@ -250,10 +265,8 @@ public class CharTestActivity extends Activity {
 		// ohlc.add(new OHLCEntity(273 ,276 ,272 ,276 ,20110406));
 		// ohlc.add(new OHLCEntity(275 ,276 ,271 ,272 ,20110404));
 		// ohlc.add(new OHLCEntity(275 ,276 ,273 ,275 ,20110401));
-
 		for (int i = ohlc.size(); i > 0; i--) {
 			this.ohlc.add(ohlc.get(i - 1));
 		}
 	}
-
 }
