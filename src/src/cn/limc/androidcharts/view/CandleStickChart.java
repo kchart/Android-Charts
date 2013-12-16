@@ -21,20 +21,20 @@
 
 package cn.limc.androidcharts.view;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.limc.androidcharts.entity.OHLCEntity;
+
+import android.R.integer;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.MotionEvent;
-import cn.limc.androidcharts.entity.OHLCEntity;
 
 /**
  * 
@@ -58,8 +58,6 @@ import cn.limc.androidcharts.entity.OHLCEntity;
  * 
  */
 public class CandleStickChart extends GridChart {
-
-	float stickWidth;
 	/**
 	 * <p>
 	 * Default price up stick's border color
@@ -243,6 +241,8 @@ public class CandleStickChart extends GridChart {
 	 */
 	private float minValue = 0;
 
+	float stickWidth;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -296,84 +296,12 @@ public class CandleStickChart extends GridChart {
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
+
+		drawCandleSticks(canvas);
 		initAxisY();
 		initAxisX();
 		super.onDraw(canvas);
 
-		drawCandleSticks(canvas);
-
-		setDisplayCrossXOnTouch(false);
-		setDisplayCrossYOnTouch(false);
-		// if (displayCrossXOnTouch || displayCrossYOnTouch) {
-		drawWithFingerClick(canvas);
-		// }
-	}
-
-	protected void drawWithFingerClick(Canvas canvas) {
-		Paint mPaint = new Paint();
-		mPaint.setColor(Color.CYAN);
-
-		float lineHLength = getWidth() - 2f;
-		float lineVLength = getHeight() - 2f;
-
-		// draw text
-		if (isDisplayAxisXTitle()) {
-			lineVLength = lineVLength - getAxisMarginBottom();
-
-			if (getClickPostX() > 0 && getClickPostY() > 0) {
-				// TODO calculate points to draw
-				PointF BoxVS = new PointF(getClickPostX()
-						- getLatitudeFontSize() * 5f / 2f, lineVLength + 2f);
-				PointF BoxVE = new PointF(getClickPostX()
-						+ getLatitudeFontSize() * 5f / 2f, lineVLength
-						+ getAxisMarginBottom() - 1f);
-
-				// draw text
-				drawAlphaTextBox(BoxVS, BoxVE,
-						getAxisXGraduate(getClickPostX()),
-						getLatitudeFontSize(), canvas);
-			}
-		}
-
-		if (isDisplayAxisYTitle()) {
-			lineHLength = lineHLength - getAxisMarginLeft();
-
-			if (getClickPostX() > 0 && getClickPostY() > 0) {
-				// TODO calculate points to draw
-				PointF BoxHS = new PointF(1f, getClickPostY()
-						- getLatitudeFontSize() / 2f);
-				PointF BoxHE = new PointF(getAxisMarginLeft(), getClickPostY()
-						+ getLatitudeFontSize() / 2f);
-
-				// draw text
-				drawAlphaTextBox(BoxHS, BoxHE,
-						getAxisYGraduate(getClickPostY()),
-						getLatitudeFontSize(), canvas);
-			}
-		}
-
-		// draw line
-		if (getClickPostX() > 0 && getClickPostY() > 0) {
-			int count = (int) ((getClickPostX() - getAxisMarginLeft()) / stickWidth);
-			int diff = (int) ((getClickPostX() - getAxisMarginLeft() - count) / stickWidth);
-			float posX = getClickPostX() - getAxisMarginLeft();
-			diff = diff;
-			float mid = (1 + stickWidth) * (diff) + (1 + stickWidth)
-					+ getAxisMarginLeft();
-			Log.e("debug", "diff:" + diff + "   click: " + mid + "   "
-					+ (getClickPostX() - getAxisMarginLeft()) + " "
-					+ stickWidth);
-			posX = mid - stickWidth / 2;
-
-			canvas.drawLine(posX, 1f, posX, lineVLength, mPaint);
-
-			// canvas.drawLine(getClickPostX(), 1f, getClickPostX(),
-			// lineVLength,
-			// mPaint);
-
-			canvas.drawLine(getAxisMarginLeft(), getClickPostY(),
-					getAxisMarginLeft() + lineHLength, getClickPostY(), mPaint);
-		}
 	}
 
 	/*
@@ -446,9 +374,8 @@ public class CandleStickChart extends GridChart {
 	@Override
 	public String getAxisYGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisYGraduate(value));
-		float val = graduate * (maxValue - minValue) + minValue;
-		String valStr = new DecimalFormat("###,###,###.##").format(val);
-		return valStr;
+		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
+				+ minValue));
 	}
 
 	/**
@@ -465,19 +392,23 @@ public class CandleStickChart extends GridChart {
 	protected void initAxisX() {
 		List<String> TitleX = new ArrayList<String>();
 		if (null != OHLCData) {
-			float average = maxSticksNum / this.getLongitudeNum();
+			float average = getMaxSticksNum() / this.getLongitudeNum();
 			// �?��刻度
-			for (int i = 0; i < this.getLongitudeNum(); i++) {
-				int index = (int) Math.floor(i * average);
+			for (int i = 0; i <= this.getLongitudeNum(); i++) {
+				int index = (int) Math.floor(i * average) - getFirstIndex();
 				if (index > maxSticksNum - 1) {
 					index = maxSticksNum - 1;
 				}
+				Log.e("debug", "index:" + index + " average:" + average);
 				// 追�??�?
-				TitleX.add(String.valueOf(OHLCData.get(index).getDate())
-						.substring(4));
+				if (index < OHLCData.size() && index >= 0) {
+					TitleX.add(String.valueOf(OHLCData.get(index).getDate())
+							.substring(4));
+				}
 			}
-			TitleX.add(String.valueOf(OHLCData.get(maxSticksNum - 1).getDate())
-					.substring(4));
+			// TitleX.add(String.valueOf(OHLCData.get(maxSticksNum -
+			// 1).getDate())
+			// .substring(4));
 		}
 		super.setAxisXTitles(TitleX);
 	}
@@ -497,9 +428,7 @@ public class CandleStickChart extends GridChart {
 		List<String> TitleY = new ArrayList<String>();
 		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 10 * 10;
 		// calculate degrees on Y axis
-		float current = minValue;
-		for (int i = 0; i < this.getLatitudeNum() || current <= maxValue; i++) {
-			current += average;
+		for (int i = 0; i < this.getLatitudeNum(); i++) {
 			String value = String.valueOf((int) Math.floor(minValue + i
 					* average));
 			if (value.length() < super.getAxisYMaxTitleLength()) {
@@ -509,19 +438,28 @@ public class CandleStickChart extends GridChart {
 			}
 			TitleY.add(value);
 		}
-		// TitleY.add("270");
-		// TitleY.add("280");
 		// calculate last degrees by use max value
-		// String value = String.valueOf((int) Math
-		// .floor(((int) maxValue) / 10 * 10));
-		// if (value.length() < super.getAxisYMaxTitleLength()) {
-		// while (value.length() < super.getAxisYMaxTitleLength()) {
-		// value = new String(" ") + value;
-		// }
-		// }
-		// TitleY.add(value);
+		String value = String.valueOf((int) Math
+				.floor(((int) maxValue) / 10 * 10));
+		if (value.length() < super.getAxisYMaxTitleLength()) {
+			while (value.length() < super.getAxisYMaxTitleLength()) {
+				value = new String(" ") + value;
+			}
+		}
+		TitleY.add(value);
 
 		super.setAxisYTitles(TitleY);
+	}
+
+	public int getFirstIndex() {
+		int index = (int) (xAxisOffset / (stickWidth + 1));
+		return index;
+	}
+
+	public int getLastIndex() {
+		int index = (int) (getFirstIndex() + (super.getWidth() - getAxisMarginLeft())
+				/ (stickWidth + 1));
+		return index;
 	}
 
 	/**
@@ -538,8 +476,11 @@ public class CandleStickChart extends GridChart {
 	 * @param canvas
 	 */
 	protected void drawCandleSticks(Canvas canvas) {
-		stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
-				.getAxisMarginRight()) / maxSticksNum) - 1;
+
+		// float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() -
+		// super
+		// .getAxisMarginRight()) / maxSticksNum) - 1;
+		stickWidth = 10;
 		float stickX = super.getAxisMarginLeft() + 1;
 
 		Paint mPaintPositive = new Paint();
@@ -547,6 +488,7 @@ public class CandleStickChart extends GridChart {
 
 		Paint mPaintNegative = new Paint();
 		mPaintNegative.setColor(negativeStickFillColor);
+
 		Paint mPaintCross = new Paint();
 		mPaintCross.setColor(crossStarColor);
 
@@ -570,35 +512,35 @@ public class CandleStickChart extends GridChart {
 						* (super.getHeight() - super.getAxisMarginBottom()) - super
 						.getAxisMarginTop());
 
+				float left = xAxisOffset + stickX;
 				if (ohlc.getOpen() < ohlc.getClose()) {
 					// stick or line
 					if (stickWidth >= 2f) {
-						canvas.drawRect(stickX, closeY, stickX + stickWidth,
-								openY, mPaintPositive);
+						canvas.drawRect(left, closeY, xAxisOffset + stickX
+								+ stickWidth, openY, mPaintPositive);
 					}
-					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-							+ stickWidth / 2f, lowY, mPaintPositive);
+					canvas.drawLine(left + stickWidth / 2f, highY, xAxisOffset
+							+ stickX + stickWidth / 2f, lowY, mPaintPositive);
 				} else if (ohlc.getOpen() > ohlc.getClose()) {
 					// stick or line
 					if (stickWidth >= 2f) {
-						canvas.drawRect(stickX, openY, stickX + stickWidth,
-								closeY, mPaintNegative);
+						canvas.drawRect(left, openY, xAxisOffset + stickX
+								+ stickWidth, closeY, mPaintNegative);
 					}
-					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-							+ stickWidth / 2f, lowY, mPaintNegative);
+					canvas.drawLine(xAxisOffset + stickX + stickWidth / 2f,
+							highY, xAxisOffset + stickX + stickWidth / 2f,
+							lowY, mPaintNegative);
 				} else {
 					// line or point
 					if (stickWidth >= 2f) {
-						canvas.drawLine(stickX, closeY, stickX + stickWidth,
-								openY, mPaintCross);
+						canvas.drawLine(left, closeY, xAxisOffset + stickX
+								+ stickWidth, openY, mPaintCross);
 					}
-					canvas.drawLine(stickX + stickWidth / 2f, highY, stickX
-							+ stickWidth / 2f, lowY, mPaintCross);
+					canvas.drawLine(left + stickWidth / 2f, highY, xAxisOffset
+							+ stickX + stickWidth / 2f, lowY, mPaintCross);
 				}
-
 				// next x
 				stickX = stickX + 1 + stickWidth;
-				// Log.e("debug", "x:" + stickX);
 			}
 		}
 	}
@@ -707,7 +649,10 @@ public class CandleStickChart extends GridChart {
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
+			Log.e("debug", "down");
+			firstDownX = event.getX();
 			TOUCH_MODE = DOWN;
+			preDownX = firstDownX;
 			break;
 		case MotionEvent.ACTION_UP:
 		case MotionEvent.ACTION_POINTER_UP:
@@ -719,8 +664,15 @@ public class CandleStickChart extends GridChart {
 				TOUCH_MODE = ZOOM;
 			}
 			break;
+
 		case MotionEvent.ACTION_MOVE:
-			Log.e("debug", "move");
+			final int pointerCount = event.getPointerCount();
+			Log.e("debug", "count:" + pointerCount);
+
+			float currentX = event.getX();
+			float diff = currentX - preDownX;
+			xAxisOffset += diff;
+			Log.e("debug", "diff:  " + diff + "  xAxis:" + xAxisOffset);
 			if (TOUCH_MODE == ZOOM) {
 				newdistance = calcDistance(event);
 				if (newdistance > MIN_LENGTH
@@ -733,20 +685,15 @@ public class CandleStickChart extends GridChart {
 					}
 					olddistance = newdistance;
 
-					super.postInvalidate();
-					super.notifyEventAll(this);
 				}
-			} else {
-				Log.e("debug", "click  move");
-				float clickPostX = event.getX();
-				float clickPostY = event.getY();
-				setClickPostX(clickPostX);
-				setClickPostY(clickPostY);
-				super.postInvalidate();
-				return false;
 			}
+			preDownX = currentX;
+			initAxisX();
+			super.postInvalidate();
+			super.notifyEventAll(this);
 			break;
 		}
+		Log.e("debug", "first:" + getFirstIndex() + " last:" + getLastIndex());
 		return true;
 	}
 
@@ -792,6 +739,7 @@ public class CandleStickChart extends GridChart {
 	 */
 	protected void zoomIn() {
 		if (maxSticksNum > 10) {
+			stickWidth += 1;
 			maxSticksNum = maxSticksNum - 3;
 		}
 	}
@@ -809,6 +757,7 @@ public class CandleStickChart extends GridChart {
 	 */
 	protected void zoomOut() {
 		if (maxSticksNum < OHLCData.size() - 1) {
+			stickWidth += 1;
 			maxSticksNum = maxSticksNum + 3;
 		}
 	}
@@ -912,7 +861,13 @@ public class CandleStickChart extends GridChart {
 	 * @return the maxSticksNum
 	 */
 	public int getMaxSticksNum() {
-		return maxSticksNum;
+		int StcickTotalwidth = (int) (super.getWidth() - getAxisMarginLeft());
+		int count = (int) ((int) StcickTotalwidth / stickWidth);
+		if (StcickTotalwidth % stickWidth != 0) {
+			count = count + 1;
+		}
+		return count;
+		// return maxSticksNum;
 	}
 
 	/**
@@ -951,5 +906,9 @@ public class CandleStickChart extends GridChart {
 	 */
 	public void setMinValue(float minValue) {
 		this.minValue = minValue;
+	}
+
+	public void resetMax() {
+
 	}
 }

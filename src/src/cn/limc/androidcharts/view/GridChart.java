@@ -850,6 +850,11 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context)
 	 */
+	public int xAxisOffset = -100;
+
+	public float firstDownX = 0;
+	public float preDownX = 0;
+
 	public GridChart(Context context) {
 		super(context);
 	}
@@ -955,11 +960,15 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			} else if (event.getPointerCount() == 2) {
 			}
 		}
+
+		postInvalidate();
+		notifyEventAll(this);
+
 		return super.onTouchEvent(event);
 	}
 
 	/**
-	 * <p>
+//	 * <p>
 	 * draw some text with border
 	 * </p>
 	 * <p>
@@ -1361,6 +1370,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			mPaintFont.setTextSize(latitudeFontSize);
 			mPaintFont.setAntiAlias(true);
 
+			Paint bgPaint = new Paint();
+			bgPaint.setColor(Color.BLACK);
+			canvas.drawRect(0, 0, getAxisMarginLeft(), getHeight(), bgPaint);
+
 			if (counts > 1) {
 				float postOffset = (super.getHeight() - axisMarginBottom - 2 * axisMarginTop)
 						/ (counts - 1);
@@ -1399,6 +1412,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 									latitudeFontSize - 2f, mPaintFont);
 						}
 					}
+
 				}
 			}
 		}
