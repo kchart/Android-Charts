@@ -21,5 +21,15 @@
     <string name="spiderwebchart_title3">title3</string>
     <string name="spiderwebchart_title4">title4</string>
     <string name="spiderwebchart_title5">title5</string>
+    
+    <!-- candle stick -->
+    <string name="open_price">开盘价:</string>
+    <string name="high_price">最高价:</string>
+    <string name="low_price">最低价:</string>
+    <string name="close_price">收盘价:</string>
+    <string name="cliff_price">涨跌额:</string>
+    <string name="cliff_ratio">涨跌幅:</string>
+    <string name="amount">成交量:</string>
+    <string name="exchange">换手率:</string>
 
 </resources>

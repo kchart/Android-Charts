@@ -34,6 +34,7 @@ import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.MotionEvent;
+import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.entity.OHLCEntity;
 
 /**
@@ -242,6 +243,10 @@ public class CandleStickChart extends GridChart {
 	 * </p>
 	 */
 	private float minValue = 0;
+	
+	private float panelWidth;
+	
+	private float panelHeight;
 
 	/*
 	 * (non-Javadoc)
@@ -309,6 +314,90 @@ public class CandleStickChart extends GridChart {
 		// }
 	}
 
+	/**
+	 * 画出k线信息面板展示k线信息
+	 * 
+	 * @param canvas
+	 */
+	protected void drawInforPanel(Canvas canvas) {
+		if (getTouchPoint() == null || OHLCData == null || OHLCData.size() <= getSelectedIndex()) {
+			return;
+		}
+		if (panelWidth > getWidth() / 2) {
+			panelWidth = getWidth() / 2;
+		}
+		if (panelHeight > getHeight()) {
+			panelHeight = getHeight();
+		}
+		OHLCEntity ohlc = OHLCData.get(getSelectedIndex());
+		float density = getResources().getDisplayMetrics().density;
+		float scaleDensity = getResources().getDisplayMetrics().scaledDensity;
+		float rectLeft = getAxisMarginLeft() + 5;
+		float rectTop = getAxisMarginTop() + 10;
+		if (getTouchPoint().x <= rectLeft + panelWidth) {
+			rectLeft = getWidth() - getAxisMarginRight() - panelWidth - 5;
+		}
+		Paint rectBKG = new Paint();
+		rectBKG.setARGB(150, 255, 255, 255);
+		canvas.drawRect(rectLeft, rectTop, rectLeft + panelWidth, rectTop + panelHeight, rectBKG);
+
+		Paint rectBound = new Paint();
+		rectBound.setColor(getResources().getColor(R.drawable.lightgray));
+		canvas.drawLine(rectLeft, rectTop, rectLeft + panelWidth, rectTop, rectBound);
+		canvas.drawLine(rectLeft, rectTop, rectLeft, rectTop + panelHeight, rectBound);
+		canvas.drawLine(rectLeft + panelWidth, rectTop, rectLeft + panelWidth, rectTop + panelHeight, rectBound);
+		canvas.drawLine(rectLeft, rectTop + panelHeight, rectLeft + panelWidth, rectTop + panelHeight, rectBound);
+
+		Paint textPaint = new Paint(Paint.LINEAR_TEXT_FLAG);
+		float textSize = 20;
+		float lineWidth = 20;
+		float tempMarginTop = rectTop + lineWidth * 2;
+		textPaint.setColor(getResources().getColor(R.drawable.black));
+		textPaint.setTextSize(textSize);
+		String tempText;
+		//
+		tempText = "" + ohlc.getDate();
+		canvas.drawText(tempText, rectLeft + (panelWidth - textPaint.measureText(tempText)) / 2, tempMarginTop,
+				textPaint);
+		//
+		tempMarginTop += lineWidth;
+		canvas.drawText(getResources().getString(R.string.open_price), rectLeft + 5, tempMarginTop, textPaint);
+		tempText = String.valueOf(ohlc.getOpen());
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
+		//
+		tempMarginTop += lineWidth;
+		canvas.drawText(getResources().getString(R.string.high_price), rectLeft + 5, tempMarginTop, textPaint);
+		tempText = String.valueOf(ohlc.getHigh());
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
+		//
+		tempMarginTop += lineWidth;
+		canvas.drawText(getResources().getString(R.string.low_price), rectLeft + 5, tempMarginTop, textPaint);
+		tempText = String.valueOf(ohlc.getLow());
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
+		//
+		tempMarginTop += lineWidth;
+		canvas.drawText(getResources().getString(R.string.close_price), rectLeft + 5, tempMarginTop, textPaint);
+		tempText = String.valueOf(ohlc.getClose());
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
+		//
+		tempMarginTop += lineWidth;
+		canvas.drawText(getResources().getString(R.string.cliff_price), rectLeft + 5, tempMarginTop, textPaint);
+		tempText = String.valueOf(ohlc.getClose() - ohlc.getOpen());
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
+		//
+		tempMarginTop += lineWidth;
+		canvas.drawText(getResources().getString(R.string.cliff_ratio), rectLeft + 5, tempMarginTop, textPaint);
+		tempText = String.valueOf((int) ((ohlc.getClose() - ohlc.getOpen()) / ohlc.getOpen() * 10000) / 100.0) + "%";
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
+		//
+		tempMarginTop += lineWidth;
+		canvas.drawText(getResources().getString(R.string.amount), rectLeft + 5, tempMarginTop, textPaint);
+		//
+		tempMarginTop += lineWidth;
+		canvas.drawText(getResources().getString(R.string.exchange), rectLeft + 5, tempMarginTop, textPaint);
+
+	}
+	
 	protected void drawWithFingerClick(Canvas canvas) {
 		Paint mPaint = new Paint();
 		mPaint.setColor(Color.CYAN);
