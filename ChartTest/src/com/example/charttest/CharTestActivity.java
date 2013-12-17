@@ -118,15 +118,13 @@ public class CharTestActivity extends Activity {
 
 		// 为chart2增加均线
 		macandlestickchart.setOHLCData(ohlc);
-
 		macandlestickchart.setDataWatcher(new DataWatcher() {
-
 			@Override
 			public void onDatachanege() {
 				macandlestickchart.notifyDatachange(null);
 			}
 		});
-
+		macandlestickchart.resetMax();
 	}
 
 	private List<Float> initMA(int days) {
