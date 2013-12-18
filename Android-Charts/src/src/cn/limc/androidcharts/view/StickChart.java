@@ -128,7 +128,7 @@ public class StickChart extends GridChart {
 	 * 柱条的最大表示数
 	 * </p>
 	 */
-	private int maxSticksNum;
+	protected int maxSticksNum;
 
 	/**
 	 * <p>
@@ -230,7 +230,8 @@ public class StickChart extends GridChart {
 
 		if (index >= maxSticksNum) {
 			index = maxSticksNum - 1;
-		} else if (index < 0) {
+		}
+		else if (index < 0) {
 			index = 0;
 		}
 
@@ -247,8 +248,7 @@ public class StickChart extends GridChart {
 	@Override
 	public String getAxisYGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisYGraduate(value));
-		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
-				+ minValue));
+		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue) + minValue));
 	}
 
 	/*
@@ -292,12 +292,9 @@ public class StickChart extends GridChart {
 				if (index > maxSticksNum - 1) {
 					index = maxSticksNum - 1;
 				}
-				TitleX.add(String.valueOf(StickData.get(index).getDate())
-						.substring(4));
+				TitleX.add(String.valueOf(StickData.get(index).getDate()).substring(4));
 			}
-			TitleX.add(String
-					.valueOf(StickData.get(maxSticksNum - 1).getDate())
-					.substring(4));
+			TitleX.add(String.valueOf(StickData.get(maxSticksNum - 1).getDate()).substring(4));
 		}
 		super.setAxisXTitles(TitleX);
 	}
@@ -328,13 +325,13 @@ public class StickChart extends GridChart {
 		if (null == super.getTouchPoint()) {
 			return 0;
 		}
-		float graduate = Float.valueOf(super.getAxisXGraduate(super
-				.getTouchPoint().x));
+		float graduate = Float.valueOf(super.getAxisXGraduate(super.getTouchPoint().x));
 		int index = (int) Math.floor(graduate * maxSticksNum);
 
 		if (index >= maxSticksNum) {
 			index = maxSticksNum - 1;
-		} else if (index < 0) {
+		}
+		else if (index < 0) {
 			index = 0;
 		}
 
@@ -358,8 +355,7 @@ public class StickChart extends GridChart {
 		;
 		// calculate degrees on Y axis
 		for (int i = 0; i < this.getLatitudeNum(); i++) {
-			String value = String.valueOf((int) Math.floor(minValue + i
-					* average));
+			String value = String.valueOf((int) Math.floor(minValue + i * average));
 			if (value.length() < super.getAxisYMaxTitleLength()) {
 				while (value.length() < super.getAxisYMaxTitleLength()) {
 					value = new String(" ") + value;
@@ -368,8 +364,7 @@ public class StickChart extends GridChart {
 			TitleY.add(value);
 		}
 		// calculate last degrees by use max value
-		String value = String.valueOf((int) Math
-				.floor(((int) maxValue) / 100 * 100));
+		String value = String.valueOf((int) Math.floor(((int) maxValue) / 100 * 100));
 		if (value.length() < super.getAxisYMaxTitleLength()) {
 			while (value.length() < super.getAxisYMaxTitleLength()) {
 				value = new String(" ") + value;
@@ -394,8 +389,7 @@ public class StickChart extends GridChart {
 	 * @param canvas
 	 */
 	protected void drawSticks(Canvas canvas) {
-		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super
-				.getAxisMarginRight()) / maxSticksNum) - 1;
+		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() - super.getAxisMarginRight()) / maxSticksNum) - 1;
 		float stickX = super.getAxisMarginLeft() + 1;
 
 		Paint mPaintStick = new Paint();
@@ -406,20 +400,16 @@ public class StickChart extends GridChart {
 			for (int i = 0; i < StickData.size(); i++) {
 				StickEntity ohlc = StickData.get(i);
 
-				float highY = (float) ((1f - (ohlc.getHigh() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float lowY = (float) ((1f - (ohlc.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
+				float highY = (float) ((1f - (ohlc.getHigh() - minValue) / (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super.getAxisMarginTop());
+				float lowY = (float) ((1f - (ohlc.getLow() - minValue) / (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super.getAxisMarginTop());
 
 				// stick or line?
 				if (stickWidth >= 2f) {
-					canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-							mPaintStick);
-				} else {
+					canvas.drawRect(stickX, highY, stickX + stickWidth, lowY, mPaintStick);
+				}
+				else {
 					canvas.drawLine(stickX, highY, stickX, lowY, mPaintStick);
 				}
 

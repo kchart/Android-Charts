@@ -141,8 +141,8 @@ public class MAStickChart extends StickChart {
 	 */
 	protected void drawLines(Canvas canvas) {
 		// distance between two points
-		float lineLength = ((super.getWidth() - super.getAxisMarginLeft() - super
-				.getAxisMarginRight()) / super.getMaxSticksNum()) - 1;
+		float lineLength = ((super.getWidth() - super.getAxisMarginLeft() - super.getAxisMarginRight()) / super
+				.getMaxSticksNum()) - 1;
 		// start point‘s X
 		float startX;
 
@@ -162,15 +162,12 @@ public class MAStickChart extends StickChart {
 					for (int j = 0; j < lineData.size(); j++) {
 						float value = lineData.get(j).floatValue();
 						// calculate Y
-						float valueY = (float) ((1f - (value - super
-								.getMinValue())
-								/ (super.getMaxValue() - super.getMinValue())) * (super
-								.getHeight() - super.getAxisMarginBottom()));
+						float valueY = (float) ((getMaxValue() - value ) / (getMaxValue() - getMinValue()) * (getHeight()
+								- getAxisMarginBottom() - getAxisMarginTop())  +  getAxisMarginTop());
 
 						// if is not last point connect to previous point
 						if (j > 0) {
-							canvas.drawLine(ptFirst.x, ptFirst.y, startX,
-									valueY, mPaint);
+							canvas.drawLine(ptFirst.x, ptFirst.y, startX, valueY, mPaint);
 						}
 						// reset
 						ptFirst = new PointF(startX, valueY);

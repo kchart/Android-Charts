@@ -102,8 +102,7 @@ public class MinusStickChart extends StickChart {
 	@Override
 	protected void drawSticks(Canvas canvas) {
 		// stick width
-		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft()) / super
-				.getMaxSticksNum()) - 6;
+		float stickWidth = ((super.getWidth() - super.getAxisMarginLeft()) / super.getMaxSticksNum()) - 6;
 		// start point's X
 		float stickX = super.getAxisMarginLeft() + 3;
 
@@ -123,20 +122,14 @@ public class MinusStickChart extends StickChart {
 			for (int i = 0; i < data.size(); i++) {
 				StickEntity e = data.get(i);
 
-				float highY = (float) ((1f - (e.getHigh() - super.minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float lowY = (float) ((1f - (e.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
+				float highY = (float) ((1f - (e.getHigh() - super.minValue) / (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super.getAxisMarginTop());
+				float lowY = (float) ((1f - (e.getLow() - minValue) / (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super.getAxisMarginTop());
 
 				// draw stick
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintFill);
-				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY,
-						mPaintBorder);
+				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY, mPaintFill);
+				canvas.drawRect(stickX, highY, stickX + stickWidth, lowY, mPaintBorder);
 
 				// next x
 				stickX = stickX + 6 + stickWidth;

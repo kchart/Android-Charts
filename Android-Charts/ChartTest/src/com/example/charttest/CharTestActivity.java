@@ -2,13 +2,18 @@
 package com.example.charttest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
+import cn.limc.androidcharts.view.IndexMAStickChart;
 import cn.limc.androidcharts.view.MACandleStickChart;
 /*
  * CharTestActivity.java
@@ -56,6 +61,7 @@ public class CharTestActivity extends Activity {
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 
+	private IndexMAStickChart indexChart;
 	MACandleStickChart macandlestickchart;
 	List<OHLCEntity> ohlc;
 
@@ -69,6 +75,67 @@ public class CharTestActivity extends Activity {
 	}
 
 	private void initMACandleStickChart() {
+		//
+		indexChart = (IndexMAStickChart) findViewById(R.id.index_chart);
+		indexChart.setBackgroundColor(getResources().getColor(R.drawable.white));
+		indexChart.setAxisXColor(getResources().getColor(R.drawable.gray));
+		indexChart.setAxisYColor(getResources().getColor(R.drawable.gray));
+		indexChart.setBorderColor(getResources().getColor(R.drawable.black));
+		indexChart.setLatitudeColor(getResources().getColor(R.drawable.lightgray));
+		indexChart.setLongitudeColor(getResources().getColor(R.drawable.lightgray));
+		indexChart.setLongitudeFontColor(getResources().getColor(R.drawable.black));
+		indexChart.setLatitudeFontColor(getResources().getColor(R.drawable.black));
+		
+		indexChart.setMaxValue(100);
+		indexChart.setMaxValue(-100);
+		Map<String,Float>  values = new HashMap<String,Float>();
+		List<Float> price = new ArrayList<Float>();
+		List<LineEntity>  lineData  = new ArrayList<LineEntity>();
+		LineEntity diff = new LineEntity();
+		for(int i= 1; i < 51;i++){
+//			values.put("11/" + String.format("%1$2d", i), (float) (2600 - i * 100 ));
+			price.add((float) (45 - (i % 10)* 10 ));
+		}
+		
+		diff.setTitle("DIF");
+		List<Float> difList = IndexUtil.calculateDIFF(price, 5, 10);
+		difList.clear();
+		for(int i=1;i<51;i++){
+			difList.add((float) (45 - (i % 10)* 10 ));
+		}
+		diff.setLineData(difList);
+		diff.setDisplay(true);
+		diff.setLineColor(Color.YELLOW);
+		lineData.add(diff);
+		
+		
+		LineEntity dem = new LineEntity();
+		dem.setTitle("DEM");
+		List<Float> demList = IndexUtil.calculateDEM(difList, 9);
+		demList.clear();
+		for(int i=0;i<50;i++){
+			demList.add((float) (Math.random() * 10 - 5));
+		}
+		dem.setLineData(demList);
+		dem.setDisplay(true);
+		dem.setLineColor(Color.BLACK);
+		lineData.add(dem);
+		
+		LineEntity macd = new LineEntity();
+		macd.setTitle("MACD");
+		List<Float> macdList = IndexUtil.calculateMACD(difList, demList);
+		macd.setLineData(macdList);
+//		macd.setLineData(price);
+		macd.setDisplay(true);
+		macd.setLineColor(Color.CYAN);
+		lineData.add(macd);
+		
+		for(int i=0;i < macdList.size();i++){
+			values.put("11/" + String.format("%1$2d", i+1), macdList.get(i));
+		}
+		indexChart.setValues(values);
+		indexChart.setLineData(lineData);
+		//
 		this.macandlestickchart = (MACandleStickChart) findViewById(R.id.macandlestickchart);
 		List<LineEntity> lines = new ArrayList<LineEntity>();
 
@@ -99,15 +166,10 @@ public class CharTestActivity extends Activity {
 		macandlestickchart.setLatitudeFontColor(Color.WHITE);
 		macandlestickchart.setAxisMarginRight(1);
 
-		// 鏈�ぇ鏄剧ず瓒虫暟
 		macandlestickchart.setMaxSticksNum(52);
-		// 鏈�ぇ绾嚎鏁�
 		macandlestickchart.setLatitudeNum(3);
-		// 鏈�ぇ缁忕嚎鏁�
 		macandlestickchart.setLongitudeNum(3);
-		// 鏈�ぇ浠锋牸
 		macandlestickchart.setMaxValue(1000);
-		// 鏈�皬浠锋牸
 		macandlestickchart.setMinValue(0);
 
 		macandlestickchart.setDisplayAxisXTitle(true);
@@ -117,10 +179,7 @@ public class CharTestActivity extends Activity {
 		macandlestickchart.setLatitudeFontSize(12);
 		macandlestickchart.setBackgroundColor(Color.BLACK);
 
-		// 涓篶hart2澧炲姞鍧囩嚎
 		macandlestickchart.setLineData(lines);
-
-		// 涓篶hart2澧炲姞鍧囩嚎
 		macandlestickchart.setOHLCData(ohlc);
 
 	}
@@ -288,4 +347,5 @@ public class CharTestActivity extends Activity {
 		}
 	}
 
+	
 }
