@@ -121,7 +121,6 @@ public class MACandleStickChart extends CandleStickChart {
 	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
-		super.onDraw(canvas);
 
 		// draw lines
 		if (null != this.lineData) {
@@ -129,6 +128,7 @@ public class MACandleStickChart extends CandleStickChart {
 				drawLines(canvas);
 			}
 		}
+		super.onDraw(canvas);
 	}
 
 	/**
@@ -146,9 +146,11 @@ public class MACandleStickChart extends CandleStickChart {
 	 */
 	protected void drawLines(Canvas canvas) {
 		// distance between two points
-		float lineLength = ((super.getWidth() - super.getAxisMarginLeft() - super
-				.getAxisMarginRight()) / super.getMaxSticksNum()) - 1;
+		// float lineLength = ((super.getWidth() - super.getAxisMarginLeft() -
+		// super
+		// .getAxisMarginRight()) / super.getMaxSticksNum()) - 1;
 		// start point‘s X
+		float lineLength = stickWidth;
 		float startX;
 
 		// draw MA lines
@@ -174,8 +176,8 @@ public class MACandleStickChart extends CandleStickChart {
 
 						// if is not last point connect to previous point
 						if (j > 0) {
-							canvas.drawLine(ptFirst.x, ptFirst.y, startX,
-									valueY, mPaint);
+							canvas.drawLine(xAxisOffset + ptFirst.x, ptFirst.y,
+									xAxisOffset + startX, valueY, mPaint);
 						}
 						// reset
 						ptFirst = new PointF(startX, valueY);

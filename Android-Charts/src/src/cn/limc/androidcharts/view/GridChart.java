@@ -850,6 +850,11 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context)
 	 */
+	public int xAxisOffset = -100;
+
+	public float firstDownX = 0;
+	public float preDownX = 0;
+
 	public GridChart(Context context) {
 		super(context);
 	}
@@ -955,11 +960,15 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			} else if (event.getPointerCount() == 2) {
 			}
 		}
+
+		postInvalidate();
+		notifyEventAll(this);
+
 		return super.onTouchEvent(event);
 	}
 
 	/**
-	 * <p>
+//	 * <p>
 	 * draw some text with border
 	 * </p>
 	 * <p>
@@ -1027,13 +1036,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		mPaintBoxLine.setAntiAlias(true);
 
 		// draw a rectangle
-		Log.e("", "ptStart.x : " + ptStart.x + "--ptStart.y : " + ptStart.y);
-		Log.e("", "ptEnd.x : " + ptEnd.x + "--ptEnd.y : " + ptEnd.y);
 		canvas.drawRoundRect(new RectF(ptStart.x, ptStart.y, ptEnd.x, ptEnd.y),
 				20.0f, 20.0f, mPaintBox);
 
 		// draw a rectangle' border
-		Log.e("", "draw a rectangle' border");
 		canvas.drawLine(ptStart.x, ptStart.y, ptStart.x, ptEnd.y, mPaintBoxLine);
 		canvas.drawLine(ptStart.x, ptEnd.y, ptEnd.x, ptEnd.y, mPaintBoxLine);
 		canvas.drawLine(ptEnd.x, ptEnd.y, ptEnd.x, ptStart.y, mPaintBoxLine);
@@ -1160,10 +1166,9 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 							* 5f / 2f, lineVLength + axisMarginBottom - 1f);
 
 					// draw text
-					Log.e("", "--------drawAxisXTitle-------");
-//					drawAlphaTextBox(BoxVS, BoxVE,
-//							getAxisXGraduate(clickPostX), longitudeFontSize,
-//							canvas);
+					drawAlphaTextBox(BoxVS, BoxVE,
+							getAxisXGraduate(clickPostX), longitudeFontSize,
+							canvas);
 				}
 			}
 		}
@@ -1180,7 +1185,6 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 							+ latitudeFontSize / 2f);
 
 					// draw text
-					Log.e("", "--------drawAxisYTitle-------");
 					drawAlphaTextBox(BoxHS, BoxHE,
 							getAxisYGraduate(clickPostY), latitudeFontSize,
 							canvas);
@@ -1189,7 +1193,6 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		}
 
 		// draw line
-		Log.e("", "--------drawAxisLine-------");
 		if (clickPostX > 0 && clickPostY > 0) {
 			if (displayCrossXOnTouch) {
 				canvas.drawLine(clickPostX, 1f, clickPostX, lineVLength, mPaint);
@@ -1200,7 +1203,6 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 						+ lineHLength, clickPostY, mPaint);
 			}
 		}
-		Log.e("", "--------end-------");
 	}
 
 	/**
@@ -1368,6 +1370,10 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			mPaintFont.setTextSize(latitudeFontSize);
 			mPaintFont.setAntiAlias(true);
 
+			Paint bgPaint = new Paint();
+			bgPaint.setColor(Color.BLACK);
+			canvas.drawRect(0, 0, getAxisMarginLeft(), getHeight(), bgPaint);
+
 			if (counts > 1) {
 				float postOffset = (super.getHeight() - axisMarginBottom - 2 * axisMarginTop)
 						/ (counts - 1);
@@ -1406,6 +1412,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 									latitudeFontSize - 2f, mPaintFont);
 						}
 					}
+
 				}
 			}
 		}

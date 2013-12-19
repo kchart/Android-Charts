@@ -3,8 +3,6 @@ package com.example.charttest;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-
 public class IndexUtil {
 
 	/**
@@ -150,7 +148,6 @@ public class IndexUtil {
 		}
 		List<Float> result = new ArrayList<Float>();
 		for (int i = 0; i < diff.size() && i < dem.size(); i++) {
-			Log.e("macd", "diff is : " + diff.get(i) + " dem is : " + dem.get(i) + "index is " + i);
 			result.add(diff.get(i) - dem.get(i));
 		}
 		return result;
