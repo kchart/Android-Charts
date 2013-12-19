@@ -255,7 +255,7 @@ public class CandleStickChart extends GridChart {
 	private int panel_bgk_color = Color.CYAN;
 
 	private int panel_bound_color = Color.LTGRAY;
-	
+
 	private int panel_text_color = Color.BLACK;
 
 	private float textSize = 20;
@@ -327,6 +327,7 @@ public class CandleStickChart extends GridChart {
 		// }
 	}
 
+
 	/**
 	 * 画出k线信息面板展示k线信息
 	 * 
@@ -366,7 +367,7 @@ public class CandleStickChart extends GridChart {
 		canvas.drawLine(rectLeft, rectTop + panelHeight, rectLeft + panelWidth, rectTop + panelHeight, rectBound);
 
 		Paint textPaint = new Paint(Paint.LINEAR_TEXT_FLAG);
-		
+
 		float lineWidth = 20;
 		float tempMarginTop = rectTop + lineWidth * 2;
 		textPaint.setColor(panel_text_color);
@@ -379,27 +380,27 @@ public class CandleStickChart extends GridChart {
 		//
 		tempMarginTop += lineWidth;
 		canvas.drawText(getResources().getString(R.string.open_price), rectLeft + 5, tempMarginTop, textPaint);
-		tempText = String.valueOf(ohlc.getOpen());
+		tempText = String.valueOf((int)(ohlc.getOpen() * 100)/100.0);
 		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
 		canvas.drawText(getResources().getString(R.string.high_price), rectLeft + 5, tempMarginTop, textPaint);
-		tempText = String.valueOf(ohlc.getHigh());
+		tempText = String.valueOf((int)(ohlc.getHigh() * 100)/100.0);
 		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
 		canvas.drawText(getResources().getString(R.string.low_price), rectLeft + 5, tempMarginTop, textPaint);
-		tempText = String.valueOf(ohlc.getLow());
+		tempText = String.valueOf((int)(ohlc.getLow() * 100)/100.0);
 		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
 		canvas.drawText(getResources().getString(R.string.close_price), rectLeft + 5, tempMarginTop, textPaint);
-		tempText = String.valueOf(ohlc.getClose());
+		tempText = String.valueOf((int)(ohlc.getClose() * 100)/100.0);
 		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
 		canvas.drawText(getResources().getString(R.string.cliff_price), rectLeft + 5, tempMarginTop, textPaint);
-		tempText = String.valueOf(ohlc.getClose() - ohlc.getOpen());
+		tempText = String.valueOf((int)((ohlc.getClose() - ohlc.getOpen()) * 100)/100.0);
 		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
