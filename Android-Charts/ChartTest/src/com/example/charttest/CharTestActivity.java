@@ -112,6 +112,7 @@ public class CharTestActivity extends Activity {
 		LineEntity dem = new LineEntity();
 		dem.setTitle("DEM");
 		List<Float> demList = IndexUtil.calculateDEM(difList, 9);
+		if(null == demList) demList = new ArrayList<Float>();
 		demList.clear();
 		for(int i=0;i<50;i++){
 			demList.add((float) (Math.random() * 10 - 5));

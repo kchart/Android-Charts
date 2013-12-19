@@ -29,6 +29,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.util.Log;
@@ -241,9 +242,23 @@ public class CandleStickChart extends GridChart {
 	 */
 	private float minValue = 0;
 
-	private float panelWidth;
+	private float panelWidth = 150;
 
-	private float panelHeight;
+	private float panelHeight = 300;
+
+	private float rectLeft = getAxisMarginLeft() + 5;
+
+	private float rectTop = getAxisMarginTop() + 10;
+
+	private int panel_alpha = 180;
+
+	private int panel_bgk_color = Color.CYAN;
+
+	private int panel_bound_color = Color.LTGRAY;
+	
+	private int panel_text_color = Color.BLACK;
+
+	private float textSize = 20;
 
 	float stickWidth;
 
@@ -318,110 +333,85 @@ public class CandleStickChart extends GridChart {
 	 * @param canvas
 	 */
 	protected void drawInforPanel(Canvas canvas) {
-		if (getTouchPoint() == null || OHLCData == null
-				|| OHLCData.size() <= getSelectedIndex()) {
+		if (getTouchPoint() == null || OHLCData == null || OHLCData.size() <= getSelectedIndex()) {
 			return;
 		}
 		if (panelWidth > getWidth() / 2) {
 			panelWidth = getWidth() / 2;
 		}
-		if (panelHeight > getHeight()) {
-			panelHeight = getHeight();
+		if (panelHeight > getHeight() - 20) {
+			panelHeight = getHeight() - 20;
 		}
 		OHLCEntity ohlc = OHLCData.get(getSelectedIndex());
-		float density = getResources().getDisplayMetrics().density;
-		float scaleDensity = getResources().getDisplayMetrics().scaledDensity;
-		float rectLeft = getAxisMarginLeft() + 5;
-		float rectTop = getAxisMarginTop() + 10;
-		if (getTouchPoint().x <= rectLeft + panelWidth) {
+		// float density = getResources().getDisplayMetrics().density;
+		// float scaleDensity =
+		// getResources().getDisplayMetrics().scaledDensity;
+		if (getTouchPoint().x <= getAxisMarginLeft() + panelWidth) {
 			rectLeft = getWidth() - getAxisMarginRight() - panelWidth - 5;
 		}
+
+		if (getTouchPoint().x >= getWidth() - getAxisMarginRight() - panelWidth) {
+			rectLeft = getAxisMarginLeft() + 5;
+		}
 		Paint rectBKG = new Paint();
-		rectBKG.setARGB(150, 255, 255, 255);
-		canvas.drawRect(rectLeft, rectTop, rectLeft + panelWidth, rectTop
-				+ panelHeight, rectBKG);
+		rectBKG.setColor(panel_bgk_color);
+		rectBKG.setAlpha(panel_alpha);
+		canvas.drawRect(rectLeft, rectTop, rectLeft + panelWidth, rectTop + panelHeight, rectBKG);
 
 		Paint rectBound = new Paint();
-		rectBound.setColor(getResources().getColor(R.drawable.lightgray));
-		canvas.drawLine(rectLeft, rectTop, rectLeft + panelWidth, rectTop,
-				rectBound);
-		canvas.drawLine(rectLeft, rectTop, rectLeft, rectTop + panelHeight,
-				rectBound);
-		canvas.drawLine(rectLeft + panelWidth, rectTop, rectLeft + panelWidth,
-				rectTop + panelHeight, rectBound);
-		canvas.drawLine(rectLeft, rectTop + panelHeight, rectLeft + panelWidth,
-				rectTop + panelHeight, rectBound);
+		rectBound.setColor(panel_bound_color);
+		canvas.drawLine(rectLeft, rectTop, rectLeft + panelWidth, rectTop, rectBound);
+		canvas.drawLine(rectLeft, rectTop, rectLeft, rectTop + panelHeight, rectBound);
+		canvas.drawLine(rectLeft + panelWidth, rectTop, rectLeft + panelWidth, rectTop + panelHeight, rectBound);
+		canvas.drawLine(rectLeft, rectTop + panelHeight, rectLeft + panelWidth, rectTop + panelHeight, rectBound);
 
 		Paint textPaint = new Paint(Paint.LINEAR_TEXT_FLAG);
-		float textSize = 20;
+		
 		float lineWidth = 20;
 		float tempMarginTop = rectTop + lineWidth * 2;
-		textPaint.setColor(getResources().getColor(R.drawable.black));
+		textPaint.setColor(panel_text_color);
 		textPaint.setTextSize(textSize);
 		String tempText;
 		//
 		tempText = "" + ohlc.getDate();
-		canvas.drawText(tempText,
-				rectLeft + (panelWidth - textPaint.measureText(tempText)) / 2,
-				tempMarginTop, textPaint);
+		canvas.drawText(tempText, rectLeft + (panelWidth - textPaint.measureText(tempText)) / 2, tempMarginTop,
+				textPaint);
 		//
 		tempMarginTop += lineWidth;
-		canvas.drawText(getResources().getString(R.string.open_price),
-				rectLeft + 5, tempMarginTop, textPaint);
+		canvas.drawText(getResources().getString(R.string.open_price), rectLeft + 5, tempMarginTop, textPaint);
 		tempText = String.valueOf(ohlc.getOpen());
-		canvas.drawText(tempText,
-				rectLeft + panelWidth - textPaint.measureText(tempText),
-				tempMarginTop, textPaint);
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
-		canvas.drawText(getResources().getString(R.string.high_price),
-				rectLeft + 5, tempMarginTop, textPaint);
+		canvas.drawText(getResources().getString(R.string.high_price), rectLeft + 5, tempMarginTop, textPaint);
 		tempText = String.valueOf(ohlc.getHigh());
-		canvas.drawText(tempText,
-				rectLeft + panelWidth - textPaint.measureText(tempText),
-				tempMarginTop, textPaint);
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
-		canvas.drawText(getResources().getString(R.string.low_price),
-				rectLeft + 5, tempMarginTop, textPaint);
+		canvas.drawText(getResources().getString(R.string.low_price), rectLeft + 5, tempMarginTop, textPaint);
 		tempText = String.valueOf(ohlc.getLow());
-		canvas.drawText(tempText,
-				rectLeft + panelWidth - textPaint.measureText(tempText),
-				tempMarginTop, textPaint);
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
-		canvas.drawText(getResources().getString(R.string.close_price),
-				rectLeft + 5, tempMarginTop, textPaint);
+		canvas.drawText(getResources().getString(R.string.close_price), rectLeft + 5, tempMarginTop, textPaint);
 		tempText = String.valueOf(ohlc.getClose());
-		canvas.drawText(tempText,
-				rectLeft + panelWidth - textPaint.measureText(tempText),
-				tempMarginTop, textPaint);
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
-		canvas.drawText(getResources().getString(R.string.cliff_price),
-				rectLeft + 5, tempMarginTop, textPaint);
+		canvas.drawText(getResources().getString(R.string.cliff_price), rectLeft + 5, tempMarginTop, textPaint);
 		tempText = String.valueOf(ohlc.getClose() - ohlc.getOpen());
-		canvas.drawText(tempText,
-				rectLeft + panelWidth - textPaint.measureText(tempText),
-				tempMarginTop, textPaint);
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
-		canvas.drawText(getResources().getString(R.string.cliff_ratio),
-				rectLeft + 5, tempMarginTop, textPaint);
-		tempText = String.valueOf((int) ((ohlc.getClose() - ohlc.getOpen())
-				/ ohlc.getOpen() * 10000) / 100.0)
-				+ "%";
-		canvas.drawText(tempText,
-				rectLeft + panelWidth - textPaint.measureText(tempText),
-				tempMarginTop, textPaint);
+		canvas.drawText(getResources().getString(R.string.cliff_ratio), rectLeft + 5, tempMarginTop, textPaint);
+		tempText = String.valueOf((int) ((ohlc.getClose() - ohlc.getOpen()) / ohlc.getOpen() * 10000) / 100.0) + "%";
+		canvas.drawText(tempText, rectLeft + panelWidth - textPaint.measureText(tempText), tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
-		canvas.drawText(getResources().getString(R.string.amount),
-				rectLeft + 5, tempMarginTop, textPaint);
+		canvas.drawText(getResources().getString(R.string.amount), rectLeft + 5, tempMarginTop, textPaint);
 		//
 		tempMarginTop += lineWidth;
-		canvas.drawText(getResources().getString(R.string.exchange),
-				rectLeft + 5, tempMarginTop, textPaint);
+		canvas.drawText(getResources().getString(R.string.exchange), rectLeft + 5, tempMarginTop, textPaint);
 
 	}
 
@@ -438,16 +428,12 @@ public class CandleStickChart extends GridChart {
 
 			if (getClickPostX() > 0 && getClickPostY() > 0) {
 				// TODO calculate points to draw
-				PointF BoxVS = new PointF(getClickPostX()
-						- getLatitudeFontSize() * 5f / 2f, lineVLength + 2f);
-				PointF BoxVE = new PointF(getClickPostX()
-						+ getLatitudeFontSize() * 5f / 2f, lineVLength
+				PointF BoxVS = new PointF(getClickPostX() - getLatitudeFontSize() * 5f / 2f, lineVLength + 2f);
+				PointF BoxVE = new PointF(getClickPostX() + getLatitudeFontSize() * 5f / 2f, lineVLength
 						+ getAxisMarginBottom() - 1f);
 
 				// draw text
-				drawAlphaTextBox(BoxVS, BoxVE,
-						getAxisXGraduate(getClickPostX()),
-						getLatitudeFontSize(), canvas);
+				drawAlphaTextBox(BoxVS, BoxVE, getAxisXGraduate(getClickPostX()), getLatitudeFontSize(), canvas);
 			}
 		}
 
@@ -456,15 +442,11 @@ public class CandleStickChart extends GridChart {
 
 			if (getClickPostX() > 0 && getClickPostY() > 0) {
 				// TODO calculate points to draw
-				PointF BoxHS = new PointF(1f, getClickPostY()
-						- getLatitudeFontSize() / 2f);
-				PointF BoxHE = new PointF(getAxisMarginLeft(), getClickPostY()
-						+ getLatitudeFontSize() / 2f);
+				PointF BoxHS = new PointF(1f, getClickPostY() - getLatitudeFontSize() / 2f);
+				PointF BoxHE = new PointF(getAxisMarginLeft(), getClickPostY() + getLatitudeFontSize() / 2f);
 
 				// draw text
-				drawAlphaTextBox(BoxHS, BoxHE,
-						getAxisYGraduate(getClickPostY()),
-						getLatitudeFontSize(), canvas);
+				drawAlphaTextBox(BoxHS, BoxHE, getAxisYGraduate(getClickPostY()), getLatitudeFontSize(), canvas);
 			}
 		}
 
@@ -474,10 +456,8 @@ public class CandleStickChart extends GridChart {
 			int diff = (int) ((getClickPostX() - getAxisMarginLeft() - count) / stickWidth);
 			float posX = getClickPostX() - getAxisMarginLeft();
 			diff = diff;
-			float mid = (1 + stickWidth) * (diff) + (1 + stickWidth)
-					+ getAxisMarginLeft();
-			Log.e("debug", "diff:" + diff + "   click: " + mid + "   "
-					+ (getClickPostX() - getAxisMarginLeft()) + " "
+			float mid = (1 + stickWidth) * (diff) + (1 + stickWidth) + getAxisMarginLeft();
+			Log.e("debug", "diff:" + diff + "   click: " + mid + "   " + (getClickPostX() - getAxisMarginLeft()) + " "
 					+ stickWidth);
 			posX = mid - stickWidth / 2;
 
@@ -487,8 +467,8 @@ public class CandleStickChart extends GridChart {
 			// lineVLength,
 			// mPaint);
 
-			canvas.drawLine(getAxisMarginLeft(), getClickPostY(),
-					getAxisMarginLeft() + lineHLength, getClickPostY(), mPaint);
+			canvas.drawLine(getAxisMarginLeft(), getClickPostY(), getAxisMarginLeft() + lineHLength, getClickPostY(),
+					mPaint);
 		}
 	}
 
@@ -506,7 +486,8 @@ public class CandleStickChart extends GridChart {
 
 		if (index >= maxSticksNum) {
 			index = maxSticksNum - 1;
-		} else if (index < 0) {
+		}
+		else if (index < 0) {
 			index = 0;
 		}
 
@@ -539,13 +520,13 @@ public class CandleStickChart extends GridChart {
 		if (null == super.getTouchPoint()) {
 			return 0;
 		}
-		float graduate = Float.valueOf(super.getAxisXGraduate(super
-				.getTouchPoint().x));
+		float graduate = Float.valueOf(super.getAxisXGraduate(super.getTouchPoint().x));
 		int index = (int) Math.floor(graduate * maxSticksNum);
 
 		if (index >= maxSticksNum) {
 			index = maxSticksNum - 1;
-		} else if (index < 0) {
+		}
+		else if (index < 0) {
 			index = 0;
 		}
 
@@ -562,8 +543,7 @@ public class CandleStickChart extends GridChart {
 	@Override
 	public String getAxisYGraduate(Object value) {
 		float graduate = Float.valueOf(super.getAxisYGraduate(value));
-		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue)
-				+ minValue));
+		return String.valueOf((int) Math.floor(graduate * (maxValue - minValue) + minValue));
 	}
 
 	/**
@@ -590,8 +570,7 @@ public class CandleStickChart extends GridChart {
 				Log.e("debug", "index:" + index + " average:" + average);
 				// 追�??�?
 				if (index < OHLCData.size() && index >= 0) {
-					TitleX.add(String.valueOf(OHLCData.get(index).getDate())
-							.substring(4));
+					TitleX.add(String.valueOf(OHLCData.get(index).getDate()).substring(4));
 				}
 			}
 			// TitleX.add(String.valueOf(OHLCData.get(maxSticksNum -
@@ -617,8 +596,7 @@ public class CandleStickChart extends GridChart {
 		float average = (int) ((maxValue - minValue) / this.getLatitudeNum()) / 10 * 10;
 		// calculate degrees on Y axis
 		for (int i = 0; i < this.getLatitudeNum(); i++) {
-			String value = String.valueOf((int) Math.floor(minValue + i
-					* average));
+			String value = String.valueOf((int) Math.floor(minValue + i * average));
 			if (value.length() < super.getAxisYMaxTitleLength()) {
 				while (value.length() < super.getAxisYMaxTitleLength()) {
 					value = new String(" ") + value;
@@ -627,8 +605,7 @@ public class CandleStickChart extends GridChart {
 			TitleY.add(value);
 		}
 		// calculate last degrees by use max value
-		String value = String.valueOf((int) Math
-				.floor(((int) maxValue) / 10 * 10));
+		String value = String.valueOf((int) Math.floor(((int) maxValue) / 10 * 10));
 		if (value.length() < super.getAxisYMaxTitleLength()) {
 			while (value.length() < super.getAxisYMaxTitleLength()) {
 				value = new String(" ") + value;
@@ -645,8 +622,7 @@ public class CandleStickChart extends GridChart {
 	}
 
 	public int getLastIndex() {
-		int index = (int) (getFirstIndex() + (super.getWidth() - getAxisMarginLeft())
-				/ (stickWidth + 1));
+		int index = (int) (getFirstIndex() + (super.getWidth() - getAxisMarginLeft()) / (stickWidth + 1));
 		return index;
 	}
 
@@ -682,49 +658,39 @@ public class CandleStickChart extends GridChart {
 		if (null != OHLCData) {
 			for (int i = 0; i < OHLCData.size(); i++) {
 				OHLCEntity ohlc = OHLCData.get(i);
-				float openY = (float) ((1f - (ohlc.getOpen() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float highY = (float) ((1f - (ohlc.getHigh() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float lowY = (float) ((1f - (ohlc.getLow() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
-				float closeY = (float) ((1f - (ohlc.getClose() - minValue)
-						/ (maxValue - minValue))
-						* (super.getHeight() - super.getAxisMarginBottom()) - super
-						.getAxisMarginTop());
+				float openY = (float) ((1f - (ohlc.getOpen() - minValue) / (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super.getAxisMarginTop());
+				float highY = (float) ((1f - (ohlc.getHigh() - minValue) / (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super.getAxisMarginTop());
+				float lowY = (float) ((1f - (ohlc.getLow() - minValue) / (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super.getAxisMarginTop());
+				float closeY = (float) ((1f - (ohlc.getClose() - minValue) / (maxValue - minValue))
+						* (super.getHeight() - super.getAxisMarginBottom()) - super.getAxisMarginTop());
 
 				float left = xAxisOffset + stickX;
 				if (ohlc.getOpen() < ohlc.getClose()) {
 					// stick or line
 					if (stickWidth >= 2f) {
-						canvas.drawRect(left, closeY, xAxisOffset + stickX
-								+ stickWidth, openY, mPaintPositive);
+						canvas.drawRect(left, closeY, xAxisOffset + stickX + stickWidth, openY, mPaintPositive);
 					}
-					canvas.drawLine(left + stickWidth / 2f, highY, xAxisOffset
-							+ stickX + stickWidth / 2f, lowY, mPaintPositive);
-				} else if (ohlc.getOpen() > ohlc.getClose()) {
+					canvas.drawLine(left + stickWidth / 2f, highY, xAxisOffset + stickX + stickWidth / 2f, lowY,
+							mPaintPositive);
+				}
+				else if (ohlc.getOpen() > ohlc.getClose()) {
 					// stick or line
 					if (stickWidth >= 2f) {
-						canvas.drawRect(left, openY, xAxisOffset + stickX
-								+ stickWidth, closeY, mPaintNegative);
+						canvas.drawRect(left, openY, xAxisOffset + stickX + stickWidth, closeY, mPaintNegative);
 					}
-					canvas.drawLine(xAxisOffset + stickX + stickWidth / 2f,
-							highY, xAxisOffset + stickX + stickWidth / 2f,
-							lowY, mPaintNegative);
-				} else {
+					canvas.drawLine(xAxisOffset + stickX + stickWidth / 2f, highY, xAxisOffset + stickX + stickWidth
+							/ 2f, lowY, mPaintNegative);
+				}
+				else {
 					// line or point
 					if (stickWidth >= 2f) {
-						canvas.drawLine(left, closeY, xAxisOffset + stickX
-								+ stickWidth, openY, mPaintCross);
+						canvas.drawLine(left, closeY, xAxisOffset + stickX + stickWidth, openY, mPaintCross);
 					}
-					canvas.drawLine(left + stickWidth / 2f, highY, xAxisOffset
-							+ stickX + stickWidth / 2f, lowY, mPaintCross);
+					canvas.drawLine(left + stickWidth / 2f, highY, xAxisOffset + stickX + stickWidth / 2f, lowY,
+							mPaintCross);
 				}
 				// next x
 				stickX = stickX + 1 + stickWidth;
@@ -831,8 +797,7 @@ public class CandleStickChart extends GridChart {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
-		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
-				.getWidth() / 50);
+		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super.getWidth() / 50);
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
@@ -862,12 +827,12 @@ public class CandleStickChart extends GridChart {
 			Log.e("debug", "diff:  " + diff + "  xAxis:" + xAxisOffset);
 			if (TOUCH_MODE == ZOOM) {
 				newdistance = calcDistance(event);
-				if (newdistance > MIN_LENGTH
-						&& Math.abs(newdistance - olddistance) > MIN_LENGTH) {
+				if (newdistance > MIN_LENGTH && Math.abs(newdistance - olddistance) > MIN_LENGTH) {
 
 					if (newdistance > olddistance) {
 						zoomIn();
-					} else {
+					}
+					else {
 						zoomOut();
 					}
 					olddistance = newdistance;
