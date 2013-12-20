@@ -57,9 +57,9 @@ public class IndexMAStickChart extends MAStickChart {
 
 	public boolean onTouchEvent(MotionEvent event) {
 //		super.onTouchEvent(event);
-//		postInvalidate();
-//		return false;
-		return super.onTouchEvent(event);
+		postInvalidate();
+		return false;
+//		return super.onTouchEvent(event);
 	}
 
 	protected void onDraw(Canvas canvas) {
