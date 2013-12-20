@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,6 +62,19 @@ public class CharTestActivity extends Activity {
 		initMACandleStickChart();
 	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		// TODO Auto-generated method stub
+		super.onConfigurationChanged(newConfig);
+		macandlestickchart.pointLastIndex = macandlestickchart.getFirstIndex();
+		Log.e("debug", "pointLast1:" + macandlestickchart.pointLastIndex
+				+"offset   "+ macandlestickchart.xAxisOffset + "  width:"
+				+ macandlestickchart.stickWidth);
+		macandlestickchart.needResume = true;
+		// macandlestickchart.xAxisOffset =
+		// -macandlestickchart.getMaxAxiLeft(last);
+	}
+
 	private void initMACandleStickChart() {
 		this.macandlestickchart = (MACandleStickChart) findViewById(R.id.macandlestickchart);
 		List<LineEntity> lines = new ArrayList<LineEntity>();
@@ -95,14 +109,14 @@ public class CharTestActivity extends Activity {
 		macandlestickchart.setLatitudeFontColor(Color.WHITE);
 		macandlestickchart.setAxisMarginRight(1);
 
-		// 最大显示足数
+		// 最大显示足数	
 		macandlestickchart.setMaxSticksNum(52);
 		// 最大纬线数
-		macandlestickchart.setLatitudeNum(6);
+		macandlestickchart.setLatitudeNum(4);
 		// 最大经线数
 		macandlestickchart.setLongitudeNum(3);
 		// 最大价格
-		macandlestickchart.setMaxValue(1000);
+		// macandlestickchart.setMaxValue(1000);
 		// 最小价格
 		macandlestickchart.setMinValue(100);
 
@@ -110,12 +124,12 @@ public class CharTestActivity extends Activity {
 		macandlestickchart.setDisplayAxisYTitle(true);
 		macandlestickchart.setDisplayLatitude(true);
 		macandlestickchart.setDisplayLongitude(true);
-		macandlestickchart.setLatitudeFontSize(20);
+		macandlestickchart.setLatitudeFontSize(15);
 		macandlestickchart.setBackgroundColor(Color.BLACK);
 
 		// 为chart2增加均线
 		macandlestickchart.setLineData(lines);
-
+		macandlestickchart.setNeedXColor(true);
 		// 为chart2增加均线
 		macandlestickchart.setOHLCData(ohlc);
 		macandlestickchart.setDataWatcher(new DataWatcher() {
@@ -274,7 +288,7 @@ public class CharTestActivity extends Activity {
 		ohlc.add(new OHLCEntity(250, 254, 250, 254, 20110604));
 		ohlc.add(new OHLCEntity(251, 252, 247, 250, 20110603));
 		ohlc.add(new OHLCEntity(253, 254, 252, 254, 20110602));
-		ohlc.add(new OHLCEntity(250, 254, 250, 254, 20110601));
+		ohlc.add(new OHLCEntity(250, 254, 250, 254, 20110601)); 
 		ohlc.add(new OHLCEntity(250, 252, 248, 250, 20110531));
 		ohlc.add(new OHLCEntity(253, 254, 250, 251, 20110530));
 		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110529));
@@ -288,7 +302,7 @@ public class CharTestActivity extends Activity {
 		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110521));
 		ohlc.add(new OHLCEntity(267, 268, 265, 266, 20110520));
 		ohlc.add(new OHLCEntity(264, 267, 264, 267, 20110519));
-		ohlc.add(new OHLCEntity(270, 330, 270, 330, 20110518));
+		ohlc.add(new OHLCEntity(270, 290, 270, 290, 20110518));
 		ohlc.add(new OHLCEntity(266, 267, 264, 264, 20110517));
 		ohlc.add(new OHLCEntity(264, 267, 263, 267, 20110516));
 		ohlc.add(new OHLCEntity(269, 269, 266, 268, 20110515));
@@ -304,6 +318,9 @@ public class CharTestActivity extends Activity {
 		ohlc.add(new OHLCEntity(271, 271, 266, 266, 20110505));
 		ohlc.add(new OHLCEntity(250, 260, 250, 260, 20110504));
 		ohlc.add(new OHLCEntity(220, 240, 220, 240, 20110503));
+		// ohlc.add(new OHLCEntity(220, 240, 220, 240, 20110502));
+		// ohlc.add(new OHLCEntity(220, 240, 220, 240, 20110501));
+
 		// ohlc.add(new OHLCEntity(268, 271, 267, 271, 20110503));
 		// ohlc.add(new OHLCEntity(273 ,275 ,268 ,268 ,20110429));
 		// ohlc.add(new OHLCEntity(274 ,276 ,270 ,272 ,20110428));
