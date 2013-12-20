@@ -260,7 +260,7 @@ public class CandleStickChart extends GridChart {
 
 	private float textSize = 20;
 
-	float stickWidth;
+	float stickWidth=10;
 
 	/*
 	 * (non-Javadoc)
@@ -276,7 +276,7 @@ public class CandleStickChart extends GridChart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @param context
+	 * @param context 
 	 * 
 	 * @param attrs
 	 * 
@@ -414,6 +414,46 @@ public class CandleStickChart extends GridChart {
 		tempMarginTop += lineWidth;
 		canvas.drawText(getResources().getString(R.string.exchange), rectLeft + 5, tempMarginTop, textPaint);
 
+	}
+
+	public int getPanel_alpha() {
+		return panel_alpha;
+	}
+
+	public void setPanel_alpha(int panel_alpha) {
+		this.panel_alpha = panel_alpha;
+	}
+
+	public int getPanel_bgk_color() {
+		return panel_bgk_color;
+	}
+
+	public void setPanel_bgk_color(int panel_bgk_color) {
+		this.panel_bgk_color = panel_bgk_color;
+	}
+
+	public int getPanel_bound_color() {
+		return panel_bound_color;
+	}
+
+	public void setPanel_bound_color(int panel_bound_color) {
+		this.panel_bound_color = panel_bound_color;
+	}
+
+	public int getPanel_text_color() {
+		return panel_text_color;
+	}
+
+	public void setPanel_text_color(int panel_text_color) {
+		this.panel_text_color = panel_text_color;
+	}
+
+	public float getTextSize() {
+		return textSize;
+	}
+
+	public void setTextSize(float textSize) {
+		this.textSize = textSize;
 	}
 
 	protected void drawWithFingerClick(Canvas canvas) {
@@ -645,7 +685,7 @@ public class CandleStickChart extends GridChart {
 		// float stickWidth = ((super.getWidth() - super.getAxisMarginLeft() -
 		// super
 		// .getAxisMarginRight()) / maxSticksNum) - 1;
-		stickWidth = 100;
+		stickWidth = 30;
 		float stickX = super.getAxisMarginLeft() + 1;
 
 		Paint mPaintPositive = new Paint();
@@ -723,9 +763,7 @@ public class CandleStickChart extends GridChart {
 	 */
 	public void pushData(OHLCEntity entity) {
 		if (null != entity) {
-			// 追�?��据到数据列表
 			addData(entity);
-			// 强制重�?
 			super.postInvalidate();
 		}
 	}

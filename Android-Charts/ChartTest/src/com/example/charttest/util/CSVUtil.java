@@ -9,8 +9,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-
 import com.example.charttest.entity.OHLCV;
 
 public class CSVUtil {

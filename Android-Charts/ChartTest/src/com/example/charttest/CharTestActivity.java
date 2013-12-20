@@ -5,11 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
-import com.example.charttest.entity.OHLCV;
-import com.example.charttest.util.CSVUtil;
-import com.example.charttest.util.ExcelUtil;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -19,6 +14,9 @@ import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
 import cn.limc.androidcharts.view.IndexMAStickChart;
 import cn.limc.androidcharts.view.MACandleStickChart;
+
+import com.example.charttest.entity.OHLCV;
+import com.example.charttest.util.CSVUtil;
 
 /*
  * CharTestActivity.java
@@ -82,6 +80,8 @@ public class CharTestActivity extends Activity {
 	private void initMACandleStickChart() {
 		//
 		indexChart = (IndexMAStickChart) findViewById(R.id.index_chart);
+		indexChart.setAxisMarginLeft(40);
+		indexChart.setAxisMarginBottom(40);
 		indexChart.setBackgroundColor(getResources().getColor(R.drawable.white));
 		indexChart.setAxisXColor(getResources().getColor(R.drawable.gray));
 		indexChart.setAxisYColor(getResources().getColor(R.drawable.gray));
@@ -111,7 +111,7 @@ public class CharTestActivity extends Activity {
 		}
 		diff.setLineData(difList);
 		diff.setDisplay(true);
-		diff.setLineColor(Color.YELLOW);
+		diff.setLineColor(Color.YELLOW); 
 		lineData.add(diff);
 
 		LineEntity dem = new LineEntity();

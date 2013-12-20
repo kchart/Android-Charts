@@ -57,8 +57,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:19:50
  * 
  */
-public class GridChart extends BaseChart implements ITouchEventNotify,
-		ITouchEventResponse {
+public class GridChart extends BaseChart implements ITouchEventNotify, ITouchEventResponse {
 
 	/**
 	 * <p>
@@ -383,8 +382,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 默认虚线效果
 	 * </p>
 	 */
-	public static final PathEffect DEFAULT_DASH_EFFECT = new DashPathEffect(
-			new float[] { 3, 3, 3, 3 }, 1);
+	public static final PathEffect DEFAULT_DASH_EFFECT = new DashPathEffect(new float[] { 3, 3, 3, 3 }, 1);
 
 	/**
 	 * <p>
@@ -937,14 +935,12 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
-		if (event.getY() > 0
-				&& event.getY() < super.getBottom() - getAxisMarginBottom()
-				&& event.getX() > super.getLeft() + getAxisMarginLeft()
-				&& event.getX() < super.getRight()) {
+		if (event.getY() > 0 && event.getY() < super.getBottom() - getAxisMarginBottom()
+				&& event.getX() > super.getLeft() + getAxisMarginLeft() && event.getX() < super.getRight()) {
 
 			// touched points, if touch point is only one
 			if (event.getPointerCount() == 1) {
-				// 获取点击坐�?
+				// 获取点击坐
 				clickPostX = event.getX();
 				clickPostY = event.getY();
 
@@ -957,7 +953,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 				// do notify
 				notifyEventAll(this);
 
-			} else if (event.getPointerCount() == 2) {
+			}
+			else if (event.getPointerCount() == 2) {
 			}
 		}
 
@@ -968,7 +965,8 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	}
 
 	/**
-//	 * <p>
+	 * // *
+	 * <p>
 	 * draw some text with border
 	 * </p>
 	 * <p>
@@ -1024,8 +1022,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @param canvas
 	 */
-	public void drawAlphaTextBox(PointF ptStart, PointF ptEnd, String content,
-			int fontSize, Canvas canvas) {
+	public void drawAlphaTextBox(PointF ptStart, PointF ptEnd, String content, int fontSize, Canvas canvas) {
 
 		Paint mPaintBox = new Paint();
 		mPaintBox.setColor(Color.BLACK);
@@ -1036,8 +1033,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 		mPaintBoxLine.setAntiAlias(true);
 
 		// draw a rectangle
-		canvas.drawRoundRect(new RectF(ptStart.x, ptStart.y, ptEnd.x, ptEnd.y),
-				20.0f, 20.0f, mPaintBox);
+		canvas.drawRoundRect(new RectF(ptStart.x, ptStart.y, ptEnd.x, ptEnd.y), 20.0f, 20.0f, mPaintBox);
 
 		// draw a rectangle' border
 		canvas.drawLine(ptStart.x, ptStart.y, ptStart.x, ptEnd.y, mPaintBoxLine);
@@ -1085,8 +1081,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	public String getAxisXGraduate(Object value) {
 
 		float length = super.getWidth() - axisMarginLeft - 2 * axisMarginRight;
-		float valueLength = ((Float) value).floatValue() - axisMarginLeft
-				- axisMarginRight;
+		float valueLength = ((Float) value).floatValue() - axisMarginLeft - axisMarginRight;
 
 		return String.valueOf(valueLength / length);
 	}
@@ -1127,8 +1122,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	public String getAxisYGraduate(Object value) {
 
 		float length = super.getHeight() - axisMarginBottom - 2 * axisMarginTop;
-		float valueLength = length
-				- (((Float) value).floatValue() - axisMarginTop);
+		float valueLength = length - (((Float) value).floatValue() - axisMarginTop);
 
 		return String.valueOf(valueLength / length);
 	}
@@ -1159,16 +1153,11 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 
 			if (clickPostX > 0 && clickPostY > 0) {
 				if (displayCrossXOnTouch) {
-					// TODO calculate points to draw
-					PointF BoxVS = new PointF(clickPostX - longitudeFontSize
-							* 5f / 2f, lineVLength + 2f);
-					PointF BoxVE = new PointF(clickPostX + longitudeFontSize
-							* 5f / 2f, lineVLength + axisMarginBottom - 1f);
-
+					PointF BoxVS = new PointF(clickPostX - longitudeFontSize * 5f / 2f, lineVLength + 2f);
+					PointF BoxVE = new PointF(clickPostX + longitudeFontSize * 5f / 2f, lineVLength + axisMarginBottom
+							- 1f);
 					// draw text
-					drawAlphaTextBox(BoxVS, BoxVE,
-							getAxisXGraduate(clickPostX), longitudeFontSize,
-							canvas);
+					drawAlphaTextBox(BoxVS, BoxVE, getAxisXGraduate(clickPostX), longitudeFontSize, canvas);
 				}
 			}
 		}
@@ -1179,15 +1168,11 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			if (clickPostX > 0 && clickPostY > 0) {
 				if (displayCrossYOnTouch) {
 					// TODO calculate points to draw
-					PointF BoxHS = new PointF(1f, clickPostY - latitudeFontSize
-							/ 2f);
-					PointF BoxHE = new PointF(axisMarginLeft, clickPostY
-							+ latitudeFontSize / 2f);
+					PointF BoxHS = new PointF(1f, clickPostY - latitudeFontSize / 2f);
+					PointF BoxHE = new PointF(axisMarginLeft, clickPostY + latitudeFontSize / 2f);
 
 					// draw text
-					drawAlphaTextBox(BoxHS, BoxHE,
-							getAxisYGraduate(clickPostY), latitudeFontSize,
-							canvas);
+					drawAlphaTextBox(BoxHS, BoxHE, getAxisYGraduate(clickPostY), latitudeFontSize, canvas);
 				}
 			}
 		}
@@ -1199,8 +1184,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			}
 
 			if (displayCrossYOnTouch) {
-				canvas.drawLine(axisMarginLeft, clickPostY, axisMarginLeft
-						+ lineHLength, clickPostY, mPaint);
+				canvas.drawLine(axisMarginLeft, clickPostY, axisMarginLeft + lineHLength, clickPostY, mPaint);
 			}
 		}
 	}
@@ -1311,29 +1295,23 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			mPaintFont.setTextSize(longitudeFontSize);
 			mPaintFont.setAntiAlias(true);
 			if (counts > 1) {
-				postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight)
-						/ (counts - 1);
+				postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight) / (counts - 1);
 				float offset = axisMarginLeft + axisMarginRight;
 				for (int i = 0; i <= counts; i++) {
 					// draw line
 					if (displayLongitude) {
-						canvas.drawLine(offset + i * postOffset, 0f, offset + i
-								* postOffset, length, mPaintLine);
+						canvas.drawLine(offset + i * postOffset, 0f, offset + i * postOffset, length, mPaintLine);
 					}
 					// draw title
 					if (displayAxisXTitle) {
 						if (i < counts && i > 0) {
-							canvas.drawText(axisXTitles.get(i), offset + i
-									* postOffset
-									- (axisXTitles.get(i).length())
-									* longitudeFontSize / 2f, super.getHeight()
-									- axisMarginBottom + longitudeFontSize,
+							canvas.drawText(axisXTitles.get(i), offset + i * postOffset - (axisXTitles.get(i).length())
+									* longitudeFontSize / 2f, super.getHeight() - axisMarginBottom + longitudeFontSize,
 									mPaintFont);
-						} else if (0 == i) {
-							canvas.drawText(axisXTitles.get(i),
-									this.axisMarginLeft + 2f, super.getHeight()
-											- axisMarginBottom
-											+ longitudeFontSize, mPaintFont);
+						}
+						else if (0 == i) {
+							canvas.drawText(axisXTitles.get(i), this.axisMarginLeft + 2f, super.getHeight()
+									- axisMarginBottom + longitudeFontSize, mPaintFont);
 						}
 					}
 				}
@@ -1375,16 +1353,13 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			canvas.drawRect(0, 0, getAxisMarginLeft(), getHeight(), bgPaint);
 
 			if (counts > 1) {
-				float postOffset = (super.getHeight() - axisMarginBottom - 2 * axisMarginTop)
-						/ (counts - 1);
-				float offset = super.getHeight() - axisMarginBottom
-						- axisMarginTop;
+				float postOffset = (super.getHeight() - axisMarginBottom - 2 * axisMarginTop) / (counts - 1);
+				float offset = super.getHeight() - axisMarginBottom - axisMarginTop;
 				for (int i = 0; i <= counts; i++) {
 					// draw line
 
 					float x1 = axisMarginLeft;
-					float totalHeight = super.getHeight()
-							- getAxisMarginBottom();
+					float totalHeight = super.getHeight() - getAxisMarginBottom();
 					float scale = ((float) (counts - i)) / (float) counts;
 					float y1 = scale * totalHeight - getAxisMarginTop();
 					float x2 = length + axisMarginLeft;
@@ -1401,15 +1376,14 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 					if (displayAxisYTitle) {
 						if (i < counts && i > 0) {
 							Log.e("debug", "i:" + i);
-							canvas.drawText(axisYTitles.get(i), 0f, y1
-									+ latitudeFontSize / 2f, mPaintFont);
-						} else if (0 == i) {
-							canvas.drawText(axisYTitles.get(i), 0f,
-									super.getHeight() - this.axisMarginBottom
-											- 2f, mPaintFont);
-						} else if (counts == i) {
-							canvas.drawText(axisYTitles.get(i), 0f,
-									latitudeFontSize - 2f, mPaintFont);
+							canvas.drawText(axisYTitles.get(i), 0f, y1 + latitudeFontSize / 2f, mPaintFont);
+						}
+						else if (0 == i) {
+							canvas.drawText(axisYTitles.get(i), 0f, super.getHeight() - this.axisMarginBottom - 2f,
+									mPaintFont);
+						}
+						else if (counts == i) {
+							canvas.drawText(axisYTitles.get(i), 0f, latitudeFontSize - 2f, mPaintFont);
 						}
 					}
 
@@ -2019,8 +1993,5 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	public void setPostOffset(float postOffset) {
 		this.postOffset = postOffset;
 	}
-	
-	
-	
 
 }
