@@ -26,7 +26,6 @@ import java.util.List;
 
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
-import cn.limc.androidcharts.util.Util;
 
 import android.content.Context;
 import android.graphics.Canvas;

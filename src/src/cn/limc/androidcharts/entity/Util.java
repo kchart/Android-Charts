@@ -1,9 +1,8 @@
-package cn.limc.androidcharts.util;
+package cn.limc.androidcharts.entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.limc.androidcharts.entity.OHLCEntity;
 
 /**
  * @author retryu E-mail:ruanchenyugood@gmail.com
