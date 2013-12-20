@@ -57,9 +57,9 @@ public class IndexMAStickChart extends MAStickChart {
 
 	public boolean onTouchEvent(MotionEvent event) {
 //		super.onTouchEvent(event);
-		postInvalidate();
-		return false;
-//		return super.onTouchEvent(event);
+//		postInvalidate();
+//		return false;
+		return super.onTouchEvent(event);
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -116,7 +116,6 @@ public class IndexMAStickChart extends MAStickChart {
 
 	protected void drawSticks(Canvas canvas) {
 
-		// super.drawSticks(canvas);
 		if (null == keys) {
 			return;
 		}
@@ -172,7 +171,6 @@ public class IndexMAStickChart extends MAStickChart {
 				keys.add(key);
 			}
 			Collections.sort(keys, new Comparator() {
-
 				public int compare(Object lhs, Object rhs) {
 					return ((String) lhs).compareToIgnoreCase((String) rhs);
 				}
