@@ -10,9 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
-import cn.limc.androidcharts.util.Util;
-import cn.limc.androidcharts.view.MACandleStickChart;
 import cn.limc.androidcharts.view.CandleStickChart.DataWatcher;
+import cn.limc.androidcharts.view.MACandleStickChart;
 
 /*
  * CharTestActivity.java
