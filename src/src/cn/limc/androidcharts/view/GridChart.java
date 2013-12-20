@@ -35,7 +35,10 @@ import android.graphics.Paint;
 import android.graphics.PathEffect;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.os.IInterface;
+import android.provider.ContactsContract.CommonDataKinds.Im;
 import android.util.AttributeSet;
+import android.util.FloatMath;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -57,6 +60,7 @@ import android.view.MotionEvent;
  * @version v1.0 2011/05/30 14:19:50
  * 
  */
+
 public class GridChart extends BaseChart implements ITouchEventNotify,
 		ITouchEventResponse {
 
@@ -85,7 +89,11 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * </p>
 	 */
 	public static final int DEFAULT_AXIS_X_COLOR = Color.RED;
+	public int TOUCH_MODE;
 
+	public final int NONE = 0;
+	public final int ZOOM = 1;
+	public final int DOWN = 2;
 	/**
 	 * <p>
 	 * default color of Y axis
@@ -685,6 +693,9 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	private int longitudeFontColor = DEFAULT_LONGITUDE_FONT_COLOR;
 
+	private int longitudeFontHighColor = Color.RED;
+	private int longitudeFontLowColor = Color.GREEN;
+
 	/**
 	 * <p>
 	 * Font size of text for the longitude　degrees display
@@ -737,7 +748,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 */
 	private List<String> axisXTitles;
 
-	private float postOffset;
+	public float postOffset;
 
 	/**
 	 * <p>
@@ -850,10 +861,23 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	 * 
 	 * @see cn.limc.androidcharts.view.BaseChart#BaseChart(Context)
 	 */
-	public int xAxisOffset = -100;
+	public float xAxisOffset = 0;
 
 	public float firstDownX = 0;
 	public float preDownX = 0;
+
+	public float olddistance = 0f;
+	public float newdistance = 0f;
+
+	public boolean needXColor = false;
+
+	public float stickWidth = 15;
+
+	public int stickCount = 20;
+
+	public int pointLastIndex;
+
+	public boolean needResume = false;
 
 	public GridChart(Context context) {
 		super(context);
@@ -937,6 +961,7 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
+		Log.e("debug", "Gride  touch");
 		if (event.getY() > 0
 				&& event.getY() < super.getBottom() - getAxisMarginBottom()
 				&& event.getX() > super.getLeft() + getAxisMarginLeft()
@@ -947,7 +972,6 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 				// 获取点击坐�?
 				clickPostX = event.getX();
 				clickPostY = event.getY();
-
 				PointF point = new PointF(clickPostX, clickPostY);
 				touchPoint = point;
 
@@ -960,15 +984,58 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			} else if (event.getPointerCount() == 2) {
 			}
 		}
+		final float MIN_LENGTH = (super.getWidth() / 40) < 5 ? 5 : (super
+				.getWidth() / 50);
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_DOWN:
+			firstDownX = event.getX();
+			TOUCH_MODE = DOWN;
+			preDownX = firstDownX;
+			break;
+		case MotionEvent.ACTION_UP:
+		case MotionEvent.ACTION_POINTER_UP:
+			TOUCH_MODE = NONE;
+			return super.onTouchEvent(event);
+		case MotionEvent.ACTION_POINTER_DOWN:
+			olddistance = calcDistance(event);
+			if (olddistance > MIN_LENGTH) {
+				TOUCH_MODE = ZOOM;
+				pointLastIndex = getLastIndex();
+			}
+			break;
+		}
 
-		postInvalidate();
-		notifyEventAll(this);
+		// postInvalidate();
 
 		return super.onTouchEvent(event);
 	}
 
+	public int getFirstIndex() {
+
+		int index = (int) (-xAxisOffset / (stickWidth + 1));
+
+		Log.e("debug", "pointLast " + "  offset:" + xAxisOffset
+				+ "  stickWidth:" + stickWidth + "  index:" + index);
+
+		return index;
+	}
+
+	public int getLastIndex() {
+		int index = (int) (getFirstIndex() + (super.getWidth()
+				- getAxisMarginLeft() - 2 * getAxisMarginRight())
+				/ (stickWidth + 1));
+		return index;
+	}
+
+	private float calcDistance(MotionEvent event) {
+		float x = event.getX(0) - event.getX(1);
+		float y = event.getY(0) - event.getY(1);
+		return FloatMath.sqrt(x * x + y * y);
+	}
+
 	/**
-//	 * <p>
+	 * // *
+	 * <p>
 	 * draw some text with border
 	 * </p>
 	 * <p>
@@ -1306,15 +1373,24 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 				mPaintLine.setPathEffect(dashEffect);
 			}
 
+			Paint bgPaint = new Paint();
+			bgPaint.setColor(Color.BLACK);
+			canvas.drawRect(0, length, super.getWidth(), getHeight(), bgPaint);
+
 			Paint mPaintFont = new Paint();
 			mPaintFont.setColor(longitudeFontColor);
 			mPaintFont.setTextSize(longitudeFontSize);
 			mPaintFont.setAntiAlias(true);
 			if (counts > 1) {
+				Log.e("debug", "drawAxisGridX width:" + super.getWidth());
 				postOffset = (super.getWidth() - axisMarginLeft - 2 * axisMarginRight)
 						/ (counts - 1);
+				float mode = postOffset - (int) (postOffset / (stickWidth + 1))
+						* ((stickWidth + 1));
+				postOffset = (postOffset - mode);
 				float offset = axisMarginLeft + axisMarginRight;
 				for (int i = 0; i <= counts; i++) {
+
 					// draw line
 					if (displayLongitude) {
 						canvas.drawLine(offset + i * postOffset, 0f, offset + i
@@ -1340,6 +1416,12 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			}
 		}
 	}
+
+	//
+	// public float getSticWidth() {
+	// stickWidth = ((super.getWidth() - axisMarginLeft- 2 * axisMarginRight/
+	// stickCount) - 1;
+	// }
 
 	/**
 	 * <p>
@@ -1375,11 +1457,24 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 			canvas.drawRect(0, 0, getAxisMarginLeft(), getHeight(), bgPaint);
 
 			if (counts > 1) {
+
 				float postOffset = (super.getHeight() - axisMarginBottom - 2 * axisMarginTop)
 						/ (counts - 1);
 				float offset = super.getHeight() - axisMarginBottom
 						- axisMarginTop;
 				for (int i = 0; i <= counts; i++) {
+
+					if (isNeedXColor() == true) {
+						if (i < (counts / 2)) {
+							mPaintFont.setColor(longitudeFontLowColor);
+						} else if (i == (counts / 2)) {
+							mPaintFont.setColor(longitudeColor);
+						} else {
+							mPaintFont.setColor(longitudeFontHighColor);
+						}
+
+					}
+
 					// draw line
 
 					float x1 = axisMarginLeft;
@@ -2019,8 +2114,13 @@ public class GridChart extends BaseChart implements ITouchEventNotify,
 	public void setPostOffset(float postOffset) {
 		this.postOffset = postOffset;
 	}
-	
-	
-	
+
+	public boolean isNeedXColor() {
+		return needXColor;
+	}
+
+	public void setNeedXColor(boolean needXColor) {
+		this.needXColor = needXColor;
+	}
 
 }

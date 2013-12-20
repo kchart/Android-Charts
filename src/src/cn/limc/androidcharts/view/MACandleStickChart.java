@@ -21,12 +21,16 @@
 
 package cn.limc.androidcharts.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.limc.androidcharts.entity.LineEntity;
+import cn.limc.androidcharts.entity.OHLCEntity;
+import cn.limc.androidcharts.util.Util;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
@@ -201,5 +205,51 @@ public class MACandleStickChart extends CandleStickChart {
 	 */
 	public void setLineData(List<LineEntity> lineData) {
 		this.lineData = lineData;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @param data
+	 * 
+	 * @see
+	 * cn.limc.androidcharts.view.CandleStickChart#notifyDatachange(java.util
+	 * .List)
+	 */
+	@Override
+	public void notifyDatachange(List<OHLCEntity> data) {
+		// TODO Auto-generated method stub
+		xAxisOffset = 0;
+		for (int i = 0; i < 10; i++) {
+			double ran = Math.random();
+			int max = (int) (ran * (50)) + 150;
+			int min = (int) (ran * (150))+100;
+			data = new ArrayList<OHLCEntity>();
+			data.add(new OHLCEntity(min, max, min, max, 20110503));
+			getOHLCData().addAll(0, data);
+		}
+		List<LineEntity> lines = new ArrayList<LineEntity>();
+		// 计算5日均线
+		LineEntity MA5 = new LineEntity();
+		MA5.setTitle("MA5");
+		MA5.setLineColor(Color.WHITE);
+		MA5.setLineData(Util.initMA(5, getOHLCData()));
+		lines.add(MA5);
+
+		// 计算10日均线
+		LineEntity MA10 = new LineEntity();
+		MA10.setTitle("MA10");
+		MA10.setLineColor(Color.RED);
+		MA10.setLineData(Util.initMA(10, getOHLCData()));
+		lines.add(MA10);
+
+		// 计算25日均线
+		LineEntity MA25 = new LineEntity();
+		MA25.setTitle("MA25");
+		MA25.setLineColor(Color.GREEN);
+		MA25.setLineData(Util.initMA(25, getOHLCData()));
+		lines.add(MA25);
+		setLineData(lines);
+		postInvalidate();
 	}
 }
