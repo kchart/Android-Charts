@@ -38,7 +38,6 @@ import android.view.MotionEvent;
 import cn.limc.androidcharts.R;
 import cn.limc.androidcharts.entity.LineEntity;
 import cn.limc.androidcharts.entity.OHLCEntity;
-import cn.limc.androidcharts.util.Util;
 
 /**
  * 

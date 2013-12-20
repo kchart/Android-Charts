@@ -1,4 +1,4 @@
-package cn.limc.androidcharts.util;
+package cn.limc.androidcharts.view;
 
 import java.util.ArrayList;
 import java.util.List;
